@@ -91,11 +91,13 @@ CrossValidationMultiLabel <- function(i, number_folds){
     
     cat("\nCall Cross Validation")
     timeCVM = system.time(resCVM <- CrossVal(ds, dataset_name, number_folds, 
-                                             folders1$FolderDatasets, folders1$FolderUtils, FolderCV))  
+                                             folders1$FolderDatasets, folders1$FolderUtils, 
+                                             FolderCV, folders1$FolderOriginals))  
     
     cat("\nCall Label Space")
     timeLS = system.time(resLS <- LabelSpace(ds, dataset_name, number_folds, FolderDS, FolderCV))     
     
+    cat("\n")
     setwd(FolderRoot)
     Runtime = rbind(timeCVM, timeLS)
     write.csv(Runtime, "RunTime.csv")

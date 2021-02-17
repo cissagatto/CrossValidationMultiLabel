@@ -43,7 +43,12 @@ FolderScripts = paste(FolderRoot, "/R/", sep="")
 #   Return                                                                                       #
 #       k-folds test, train and validation                                                       #
 ##################################################################################################
-CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils, FolderCV){ 
+CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils, FolderCV, FolderO){ 
+  
+  #FolderDatasets = folders1$FolderDatasets
+  #FolderUtils = folders1$FolderUtils
+  #FolderCV = folders1$FolderResults
+  #FolderO = folders1$FolderOriginals
   
   FolderCVTR = paste(FolderCV, "/Tr", sep="")
   if(dir.exists(FolderCVTR)==TRUE){
@@ -67,8 +72,8 @@ CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils
   }
   
   library(foreign)
-  setwd(FolderDatasets)
-  arquivo = mldr(dataset_name, use_xml = TRUE)
+  setwd(FolderO)
+  arquivo = mldr(dataset_name)
   
   #arquivo = mldr.datasets::get.mldr(dataset_name)
   
@@ -82,9 +87,9 @@ CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils
   cvdata <- create_kfold_partition(arquivo, number_folds, "iterative")
   cvDataFolds = cvdata$fold
   
-  cat("\nSaves cross validation in RDS format\n")
-  setwd(FolderDatasets)
-  write_rds(cvdata, "crossvalidation.rds")
+  #cat("\nSaves cross validation in RDS format\n")
+  #setwd(FolderDatasets)
+  #write_rds(cvdata, "crossvalidation.rds")
   
   # from the first fold to the last
   i = 1
