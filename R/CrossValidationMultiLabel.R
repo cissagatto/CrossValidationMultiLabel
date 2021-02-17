@@ -205,7 +205,7 @@ CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils
 #   Return:                                                                                      #
 #       Training set labels space                                                                #
 ##################################################################################################
-LabelSpace <- function(ds, dataset_name, number_folds, FolderDS){
+LabelSpace <- function(ds, dataset_name, number_folds, FolderDS, FolderCV){
   
   retorno = list()
   classes = list()
@@ -222,6 +222,13 @@ LabelSpace <- function(ds, dataset_name, number_folds, FolderDS){
     cat("\n")
   } else {
     dir.create(FolderNamesLabels)  
+  }
+  
+  FolderCVTR = paste(FolderCV, "/Tr", sep="")
+  if(dir.exists(FolderCVTR)==TRUE){
+    cat("\n")
+  } else {
+    dir.create(FolderCVTR)  
   }
   
   # from the first FOLD to the last

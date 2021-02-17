@@ -94,15 +94,12 @@ CrossValidationMultiLabel <- function(i, number_folds){
                                              folders1$FolderDatasets, folders1$FolderUtils, FolderCV))  
     
     cat("\nCall Label Space")
-    timeLS = system.time(resLS <- LabelSpace(ds, dataset_name, number_folds, FolderDS))     
+    timeLS = system.time(resLS <- LabelSpace(ds, dataset_name, number_folds, FolderDS, FolderCV))     
     
     setwd(FolderRoot)
     Runtime = rbind(timeCVM, timeLS)
     write.csv(Runtime, "RunTime.csv")
     
-    parallel::stopCluster(cl) 
-    cat("\nEND!")
-  
 }
 
 ##################################################################################################
