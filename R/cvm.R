@@ -70,19 +70,24 @@ n = nrow(datasets)
 ##################################################################################################
 number_folds <- as.numeric(args[1])
 
+##################################################################################################
+# Get the number of folds                                                                        #
+##################################################################################################
+number_dataset <- as.numeric(args[2])
 
-i = 1
-while(i<=n){
-  ds = datasets[i,]
+
+#i = 1
+#while(i<=n){
+  ds = datasets[number_dataset,]
   dataset_name <- toString(ds$Name) 
   cat("\nDataset: ", dataset_name)
   
   cat("\nCall Function")
-  timeCVM = system.time(res <- CrossValidationMultiLabel(i, number_folds))
+  timeCVM = system.time(res <- CrossValidationMultiLabel(number_dataset, number_folds))
   
   setwd(FolderRoot)
-  save(timeFinal, file = paste(dataset_name, "-RunTimeFinal.rds", sep=""))
+  save(timeCVM, file = paste(dataset_name, "-RunTimeFinal.rds", sep=""))
   
-  i = i + 1
-  gc()
-}
+  #i = i + 1
+  #gc()
+#}
