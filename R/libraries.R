@@ -37,26 +37,6 @@ setwd(FolderRoot)
 FolderScripts = paste(FolderRoot, "/R/", sep="")
 setwd(FolderScripts)
 
-##################################################################################################
-# PACKAGES EXISTS? IF NOT, INSTALL!                                                              #
-##################################################################################################
-
-#cat("\n Verify if packages are installed!")
-bibliotecas <- function(x){
-  for( i in x ){
-    #  require returns TRUE invisibly if it was able to load package
-    if( ! require( i , character.only = TRUE ) ){
-      #  If package was not able to be loaded then re-install
-      install.packages( i , dependencies = TRUE, quiet = TRUE, keep_outputs = TRUE  )
-      #  Load package after installing
-      require( i , character.only = TRUE )
-    }
-  }
-}
-
-#  Then try/install packages...
-bibliotecas( c("rJava", "RWeka", "readr", "foreign" , "mldr", "parallel", 
-               "mldr", "utiml", "foreach", "doParallel"))
 
 ##################################################################################################
 # LOAD EXTERNAL LIBRARIES                                                                        #
@@ -69,10 +49,7 @@ library("stringr", quietly = TRUE)
 library("rJava", quietly = TRUE) 
 library("RWeka", quietly = TRUE) 
 library("mldr", quietly = TRUE) 
-library("parallel", quietly = TRUE) 
 library("utiml", quietly = TRUE)
-library("foreach", quietly = TRUE) 
-library("doParallel", quietly = TRUE) 
 
 
 ##################################################################################################
