@@ -4,6 +4,11 @@ A code to execute and save a cross validation in multilabel classification
 ## Scripts
 This source code consists of a R project for R Studio and the following R scripts:
 
+1. libraries
+2. utils
+3. CrossValidationMultiLabel
+4. main
+5. cvm
 
 
 ## Jars
@@ -18,22 +23,21 @@ Place a copy of this code in _"C:/Users/[username]/CrossValidationMultilabel"_ o
 ## File "datasets.csv"
 A file called "datasets.csv" must be in the *datasets* folder. This file is used to read informations about the datasets and they are used in the code. All 74 datasets available in cometa are in this file. If you want to use another dataset, please, add the following information about the dataset in the file:
 
-_Id, Name, Domain, Labels, Instances, Attributes, Inputs, Labelsets, Single, Max freq, Card, Dens, MeanIR, Scumble, TCS, AttStart, AttEnd, LabelStart, LabelEnd
+_Id, Name, Domain, Labels, Instances, Attributes, Inputs, Labelsets, Single, Max freq, Card, Dens, MeanIR, Scumble, TCS, AttStart, AttEnd, LabelStart, LabelEnd_
 
 The _"Id"_ of the dataset is a mandatory parameter (_n_dataset_) in the command line to run all code. The "LabelStart" and "LabelEnd" are used in a lot of internal functions. Please, make sure that these information are available before run the code.
 
 # Run
 
 ```
-Rscript cvm.R [number_folds]
+Rscript cvm.R [number_dataset] [number_folds]
 ```
 
 Example:
 
 ```
-Rscript cvm.R 10
+Rscript cvm.R 2 5
 ```
-
 
 ## Acknowledgment
 This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
