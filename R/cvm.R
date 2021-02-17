@@ -70,25 +70,25 @@ n = nrow(datasets)
 ##################################################################################################
 number_dataset <- as.numeric(args[1])
 
+
+
 ##################################################################################################
 # Get the number of folds                                                                        #
 ##################################################################################################
 number_folds <- as.numeric(args[2])
 
+##################################################################################################
+#
+##################################################################################################
+ds = datasets[number_dataset,]
+dataset_name <- toString(ds$Name) 
+cat("\nDataset: ", dataset_name)
+  
+cat("\nCross Validation")
+timeCVM = system.time(res <- CrossValidationMultiLabel(number_dataset, number_folds))
+cat("\n")
 
-#i = 1
-#while(i<=n){
-  ds = datasets[number_dataset,]
-  dataset_name <- toString(ds$Name) 
-  cat("\nDataset: ", dataset_name)
-  
-  cat("\nCall Function")
-  timeCVM = system.time(res <- CrossValidationMultiLabel(number_dataset, number_folds))
-  cat("\n")
-  
-  setwd(FolderRoot)
-  save(timeCVM, file = paste(dataset_name, "-RunTimeFinal.rds", sep=""))
-  
-  #i = i + 1
-  #gc()
-#}
+Folder = paste(FolderRoot, "/Results/", dataset_name, sep="")
+setwd(Folder)
+save(timeCVM, file = paste(dataset_name, "-RunTimeFinal.rds", sep=""))
+save(res, file = paste(dataset_name, "-Results.rds", sep=""))

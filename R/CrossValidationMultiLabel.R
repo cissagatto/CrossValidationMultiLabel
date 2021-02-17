@@ -45,10 +45,7 @@ FolderScripts = paste(FolderRoot, "/R/", sep="")
 ##################################################################################################
 CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils, FolderCV, FolderO){ 
   
-  #FolderDatasets = folders1$FolderDatasets
-  #FolderUtils = folders1$FolderUtils
-  #FolderCV = folders1$FolderResults
-  #FolderO = folders1$FolderOriginals
+  retorno = list()
   
   FolderCVTR = paste(FolderCV, "/Tr", sep="")
   if(dir.exists(FolderCVTR)==TRUE){
@@ -75,8 +72,6 @@ CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils
   setwd(FolderO)
   arquivo = mldr(dataset_name)
   
-  #arquivo = mldr.datasets::get.mldr(dataset_name)
-  
   nomesRotulos = c(colnames(arquivo$dataset[ds$LabelStart:ds$LabelEnd]))
   setwd(FolderCV)
   write.csv(nomesRotulos, "namesLabels.csv")
@@ -86,10 +81,6 @@ CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils
   set.seed(1234)
   cvdata <- create_kfold_partition(arquivo, number_folds, "iterative")
   cvDataFolds = cvdata$fold
-  
-  #cat("\nSaves cross validation in RDS format\n")
-  #setwd(FolderDatasets)
-  #write_rds(cvdata, "crossvalidation.rds")
   
   # from the first fold to the last
   i = 1
@@ -189,6 +180,15 @@ CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils
     i = i + 1
     gc()
   }    
+  
+  retorno$cvdata = cvdata
+  retorno$FolderCVTR = FolderCVTR
+  retorno$FolderCVTS = FolderCVTS
+  retorno$FolderCVVL = FolderCVVL
+  retorno$mldr_dataset = arquivo
+  
+  return(retorno)
+  
   gc()
   cat("\n##################################################################################################")
   cat("\n# FUNCTION CROSS VALIDATION: END                                                                 #") 
@@ -258,7 +258,7 @@ LabelSpace <- function(ds, dataset_name, number_folds, FolderDS, FolderCV){
     
     namesLabels = c(colnames(classes[[k]]))
     setwd(FolderNamesLabels)
-    nome = paste(dataset_name, "-NamesLabels.csv")
+    nome = paste(dataset_name, "-NamesLabels.csv", sep="")
     write.csv(namesLabels, nome)
     
     k = k + 1 # increment FOLD
