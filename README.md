@@ -1,5 +1,5 @@
 # CrossValidationMultiLabel
-A code to execute and save a cross validation in multilabel classification
+A code to execute and save a cross validation in multilabel classification. This code is part of my doctoral research.
 
 ## Scripts
 This source code consists of a R project for R Studio and the following R scripts:
