@@ -49,7 +49,10 @@ library("stringr", quietly = TRUE)
 library("rJava", quietly = TRUE) 
 library("RWeka", quietly = TRUE) 
 library("mldr", quietly = TRUE) 
+library("parallel", quietly = TRUE) 
 library("utiml", quietly = TRUE)
+library("foreach", quietly = TRUE) 
+library("doParallel", quietly = TRUE) 
 
 
 ##################################################################################################

@@ -54,7 +54,7 @@ source("CrossValidationMultiLabel.R")
 #       number_folds: number of folds to be created                                              #
 #   Return                                                                                       #
 ##################################################################################################
-CrossValidationMultiLabel <- function(i, number_folds){
+CrossValidationMultiLabel <- function(number_dataset, number_folds, validation){
   
   retorno = list()
   
@@ -83,16 +83,16 @@ CrossValidationMultiLabel <- function(i, number_folds){
   
     cat("\nStart CV")
     
-    cat("\nId: ", i)
+    cat("\nId: ", number_dataset)
     setwd(FolderRoot)
     datasets <- data.frame(read.csv("datasets.csv"))
     n = nrow(datasets)
-    ds = datasets[i,]
+    ds = datasets[number_dataset,]
     dataset_name <- toString(ds$Name) 
     cat("\nDataset: ", dataset_name)	
     
     cat("\nCall Cross Validation")
-    timeCVM = system.time(resCVM <- CrossVal(ds, dataset_name, number_folds, 
+    timeCVM = system.time(resCVM <- CrossVal(ds, dataset_name, number_folds, validation, 
                                              folders1$FolderDatasets, folders1$FolderUtils, 
                                              FolderCV, folders1$FolderOriginals))  
     

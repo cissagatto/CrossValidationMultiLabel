@@ -43,7 +43,8 @@ FolderScripts = paste(FolderRoot, "/R/", sep="")
 #   Return                                                                                       #
 #       k-folds test, train and validation                                                       #
 ##################################################################################################
-CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils, FolderCV, FolderO){ 
+CrossVal <- function(ds, dataset_name, number_folds, validation, 
+                     FolderDatasets, FolderUtils, FolderCV, FolderO){ 
   
   retorno = list()
   
@@ -82,109 +83,181 @@ CrossVal <- function(ds, dataset_name, number_folds, FolderDatasets, FolderUtils
   cvdata <- create_kfold_partition(arquivo, number_folds, "iterative")
   cvDataFolds = cvdata$fold
   
-  # from the first fold to the last
-  i = 1
-  while(i<=number_folds){
-    
-    cat("\nFold: ", i)
-    
-    # get the specific fold
-    FoldSpecific = partition_fold(cvdata, i, has.validation = TRUE)
-    
-    #########################################################
-    cat("\n\tTRAIN ", i, "\n")
-    setwd(FolderCVTR)
-    
-    # get the start and end column labels
-    inicio = ds$LabelStart
-    fim = ds$LabelEnd
-    
-    #cat("\n\t\tTRAIN: separates the measurements and the testing FOLD\n")
-    treino_rds = FoldSpecific$train
-    treino_ds = FoldSpecific$train$dataset
-    treino_ds$.labelcount = NULL
-    treino_ds$.SCUMBLE = NULL
-    treino_ds = data.frame(treino_ds)
-    
-    #cat("\n\t\tTRAIN: Save CSV")
-    str_csv_treino = paste(dataset_name, "-Split-Tr-", i, ".csv", sep="")
-    write.csv(treino_ds, str_csv_treino, row.names = FALSE)
-    
-    #cat("\n\t\tTRAIN: Convert, and save, CSV to ARFF")
-    str_arff_treino = paste(dataset_name, "-Split-Tr-", i, ".arff", sep="")
-    arg1Tr = str_csv_treino
-    arg2Tr = str_arff_treino
-    arg3Tr = paste(inicio, "-", fim, sep="")
-    converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
-    
-    #cat("\n\t\tTRAIN: Verify and correct {0} and {1}\n")
-    arquivo = paste(FolderCVTR, "/", str_arff_treino, sep="")
-    str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
-    print(system(str0))
-    
-    
-    #########################################################
-    cat("\n\tTEST ", i, "\n")
-    setwd(FolderCVTS)
-    
-    #cat("\n\t\tTEST: separates the measurements and the testing FOLD\n")
-    teste_rds = FoldSpecific$test
-    teste_ds = FoldSpecific$test$dataset
-    teste_ds$.labelcount = NULL
-    teste_ds$.SCUMBLE = NULL
-    teste_ds = data.frame(teste_ds)       
-    
-    #cat("\n\t\tTEST: Save CSV\n")
-    str_csv_teste = paste(dataset_name, "-Split-Ts-", i, ".csv", sep="")
-    write.csv(teste_ds, str_csv_teste, row.names = FALSE)
-    
-    #cat("\n\t\tTEST: Convert, and save, CSV to ARFF\n")
-    str_arff_teste = paste(dataset_name, "-Split-Ts-", i, ".arff", sep="")
-    arg1Tr = str_csv_teste
-    arg2Tr = str_arff_teste
-    arg3Tr = paste(inicio, "-", fim, sep="")
-    converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
-    
-    #cat("\n\t\tTEST: Verify and correct {0} and {1}\n")
-    arquivo = paste(FolderCVTS, "/", str_arff_teste, sep="")
-    str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
-    print(system(str0))
-    
-    #########################################################
-    cat("\n\tVALIDATION ", i, "\n")
-    setwd(FolderCVVL)
-    
-    #cat("\n\t\tVALIDATION: separates the measurements and the testing FOLD\n")
-    val_rds = FoldSpecific$validation
-    val_ds = FoldSpecific$validation$dataset
-    val_ds$.labelcount = NULL
-    val_ds$.SCUMBLE = NULL
-    val_ds = data.frame(val_ds)
-    
-    #cat("\n\t\tVALIDATION: Save CSV\n")
-    str_csv_val = paste(dataset_name, "-Split-Vl-", i, ".csv", sep="")
-    write.csv(val_ds, str_csv_val, row.names = FALSE)
-    
-    #cat("\n\t\tVALIDATION: Convert, and save, CSV to ARFF\n")
-    str_arff_val = paste(dataset_name, "-Split-Vl-", i, ".arff", sep="")
-    arg1Tr = str_csv_val
-    arg2Tr = str_arff_val
-    arg3Tr = paste(inicio, "-", fim, sep="")
-    converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
-    
-    #cat("\n\t\tVALIDATION: Verify and correct {0} and {1} in ARFF files\n")
-    arquivo = paste(FolderCVVL, "/", str_arff_val, sep="")
-    str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
-    print(system(str0))
-    
-    i = i + 1
-    gc()
-  }    
+  
+  if(validation == 1){
+    # from the first fold to the last
+    i = 1
+    while(i<=number_folds){
+      
+      cat("\nFold: ", i)
+      
+      # get the specific fold
+      FoldSpecific = partition_fold(cvdata, i, has.validation = TRUE)
+      
+      #########################################################
+      cat("\n\tTRAIN ", i, "\n")
+      setwd(FolderCVTR)
+      
+      # get the start and end column labels
+      inicio = ds$LabelStart
+      fim = ds$LabelEnd
+      
+      #cat("\n\t\tTRAIN: separates the measurements and the testing FOLD\n")
+      treino_rds = FoldSpecific$train
+      treino_ds = FoldSpecific$train$dataset
+      treino_ds$.labelcount = NULL
+      treino_ds$.SCUMBLE = NULL
+      treino_ds = data.frame(treino_ds)
+      
+      #cat("\n\t\tTRAIN: Save CSV")
+      str_csv_treino = paste(dataset_name, "-Split-Tr-", i, ".csv", sep="")
+      write.csv(treino_ds, str_csv_treino, row.names = FALSE)
+      
+      #cat("\n\t\tTRAIN: Convert, and save, CSV to ARFF")
+      str_arff_treino = paste(dataset_name, "-Split-Tr-", i, ".arff", sep="")
+      arg1Tr = str_csv_treino
+      arg2Tr = str_arff_treino
+      arg3Tr = paste(inicio, "-", fim, sep="")
+      converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
+      
+      #cat("\n\t\tTRAIN: Verify and correct {0} and {1}\n")
+      arquivo = paste(FolderCVTR, "/", str_arff_treino, sep="")
+      str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
+      print(system(str0))
+      
+      
+      #########################################################
+      cat("\n\tTEST ", i, "\n")
+      setwd(FolderCVTS)
+      
+      #cat("\n\t\tTEST: separates the measurements and the testing FOLD\n")
+      teste_rds = FoldSpecific$test
+      teste_ds = FoldSpecific$test$dataset
+      teste_ds$.labelcount = NULL
+      teste_ds$.SCUMBLE = NULL
+      teste_ds = data.frame(teste_ds)       
+      
+      #cat("\n\t\tTEST: Save CSV\n")
+      str_csv_teste = paste(dataset_name, "-Split-Ts-", i, ".csv", sep="")
+      write.csv(teste_ds, str_csv_teste, row.names = FALSE)
+      
+      #cat("\n\t\tTEST: Convert, and save, CSV to ARFF\n")
+      str_arff_teste = paste(dataset_name, "-Split-Ts-", i, ".arff", sep="")
+      arg1Tr = str_csv_teste
+      arg2Tr = str_arff_teste
+      arg3Tr = paste(inicio, "-", fim, sep="")
+      converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
+      
+      #cat("\n\t\tTEST: Verify and correct {0} and {1}\n")
+      arquivo = paste(FolderCVTS, "/", str_arff_teste, sep="")
+      str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
+      print(system(str0))
+      
+      #########################################################
+      cat("\n\tVALIDATION ", i, "\n")
+      setwd(FolderCVVL)
+      
+      #cat("\n\t\tVALIDATION: separates the measurements and the testing FOLD\n")
+      val_rds = FoldSpecific$validation
+      val_ds = FoldSpecific$validation$dataset
+      val_ds$.labelcount = NULL
+      val_ds$.SCUMBLE = NULL
+      val_ds = data.frame(val_ds)
+      
+      #cat("\n\t\tVALIDATION: Save CSV\n")
+      str_csv_val = paste(dataset_name, "-Split-Vl-", i, ".csv", sep="")
+      write.csv(val_ds, str_csv_val, row.names = FALSE)
+      
+      #cat("\n\t\tVALIDATION: Convert, and save, CSV to ARFF\n")
+      str_arff_val = paste(dataset_name, "-Split-Vl-", i, ".arff", sep="")
+      arg1Tr = str_csv_val
+      arg2Tr = str_arff_val
+      arg3Tr = paste(inicio, "-", fim, sep="")
+      converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
+      
+      #cat("\n\t\tVALIDATION: Verify and correct {0} and {1} in ARFF files\n")
+      arquivo = paste(FolderCVVL, "/", str_arff_val, sep="")
+      str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
+      print(system(str0))
+      
+      i = i + 1
+      gc()
+    }    
+  } else {
+    # from the first fold to the last
+    i = 1
+    while(i<=number_folds){
+      
+      cat("\nFold: ", i)
+      
+      # get the specific fold
+      FoldSpecific = partition_fold(cvdata, i, has.validation = FALSE)
+      
+      #########################################################
+      cat("\n\tTRAIN ", i, "\n")
+      setwd(FolderCVTR)
+      
+      # get the start and end column labels
+      inicio = ds$LabelStart
+      fim = ds$LabelEnd
+      
+      #cat("\n\t\tTRAIN: separates the measurements and the testing FOLD\n")
+      treino_rds = FoldSpecific$train
+      treino_ds = FoldSpecific$train$dataset
+      treino_ds$.labelcount = NULL
+      treino_ds$.SCUMBLE = NULL
+      treino_ds = data.frame(treino_ds)
+      
+      #cat("\n\t\tTRAIN: Save CSV")
+      str_csv_treino = paste(dataset_name, "-Split-Tr-", i, ".csv", sep="")
+      write.csv(treino_ds, str_csv_treino, row.names = FALSE)
+      
+      #cat("\n\t\tTRAIN: Convert, and save, CSV to ARFF")
+      str_arff_treino = paste(dataset_name, "-Split-Tr-", i, ".arff", sep="")
+      arg1Tr = str_csv_treino
+      arg2Tr = str_arff_treino
+      arg3Tr = paste(inicio, "-", fim, sep="")
+      converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
+      
+      #cat("\n\t\tTRAIN: Verify and correct {0} and {1}\n")
+      arquivo = paste(FolderCVTR, "/", str_arff_treino, sep="")
+      str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
+      print(system(str0))
+      
+      
+      #########################################################
+      cat("\n\tTEST ", i, "\n")
+      setwd(FolderCVTS)
+      
+      #cat("\n\t\tTEST: separates the measurements and the testing FOLD\n")
+      teste_rds = FoldSpecific$test
+      teste_ds = FoldSpecific$test$dataset
+      teste_ds$.labelcount = NULL
+      teste_ds$.SCUMBLE = NULL
+      teste_ds = data.frame(teste_ds)       
+      
+      #cat("\n\t\tTEST: Save CSV\n")
+      str_csv_teste = paste(dataset_name, "-Split-Ts-", i, ".csv", sep="")
+      write.csv(teste_ds, str_csv_teste, row.names = FALSE)
+      
+      #cat("\n\t\tTEST: Convert, and save, CSV to ARFF\n")
+      str_arff_teste = paste(dataset_name, "-Split-Ts-", i, ".arff", sep="")
+      arg1Tr = str_csv_teste
+      arg2Tr = str_arff_teste
+      arg3Tr = paste(inicio, "-", fim, sep="")
+      converteArff(arg1Tr, arg2Tr, arg3Tr, FolderUtils)
+      
+      #cat("\n\t\tTEST: Verify and correct {0} and {1}\n")
+      arquivo = paste(FolderCVTS, "/", str_arff_teste, sep="")
+      str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep="")
+      print(system(str0))
+      
+      i = i + 1
+      gc()
+    }    
+  }
   
   retorno$cvdata = cvdata
-  retorno$FolderCVTR = FolderCVTR
-  retorno$FolderCVTS = FolderCVTS
-  retorno$FolderCVVL = FolderCVVL
   retorno$mldr_dataset = arquivo
   
   return(retorno)

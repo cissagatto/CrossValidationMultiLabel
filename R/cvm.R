@@ -77,6 +77,15 @@ number_dataset <- as.numeric(args[1])
 ##################################################################################################
 number_folds <- as.numeric(args[2])
 
+
+
+##################################################################################################
+# Validation?                                                                                    #
+##################################################################################################
+validation <- as.numeric(args[3])
+
+
+
 ##################################################################################################
 #
 ##################################################################################################
@@ -85,7 +94,7 @@ dataset_name <- toString(ds$Name)
 cat("\nDataset: ", dataset_name)
   
 cat("\nCross Validation")
-timeCVM = system.time(res <- CrossValidationMultiLabel(number_dataset, number_folds))
+timeCVM = system.time(res <- CrossValidationMultiLabel(number_dataset, number_folds, validation))
 cat("\n")
 
 Folder = paste(FolderRoot, "/Results/", dataset_name, sep="")
