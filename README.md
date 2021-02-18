@@ -20,7 +20,7 @@ Confirms if the folder UTILS contains the following files: Clus.jar, R_csv_2_arf
 After downloading the dataset you want to use, place it in the */CrossValidationMultilabel/Datasets/Originals* folder. Don't forget that the .xml and .arff files of the respective dataset are needed.
 
 ## Folder Path
-Place a copy of this code in _"C:/Users/[username]/CrossValidationMultilabel"_ or _"/home/username/CrossValidationMultilabel"_. Our files are configured to obtain the paths of the folders from the root. You can change this in the code if you want.
+Place a copy of this code in _"C:/Users/[username]/CrossValidationMultiLabel"_ or _"/home/username/CrossValidationMultiLabel"_. Our files are configured to obtain the paths of the folders from the root. You can change this in the code if you want.
 
 ## File "datasets.csv"
 A file called "datasets.csv" must be in the *datasets* folder. This file is used to read informations about the datasets and they are used in the code. All 74 datasets available in cometa are in this file. If you want to use another dataset, please, add the following information about the dataset in the file:
