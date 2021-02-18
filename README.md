@@ -32,13 +32,19 @@ The _"Id"_ of the dataset is a mandatory parameter (_n_dataset_) in the command 
 # Run
 
 ```
-Rscript cvm.R [number_dataset] [number_folds]
+Rscript cvm.R [number_dataset] [number_folds][validation]
 ```
 
 Example:
 
+With Validation
 ```
-Rscript cvm.R 2 5
+Rscript cvm.R 2 5 1
+```
+
+Whithout Validation
+```
+Rscript cvm.R 3 6 0
 ```
 
 ## Acknowledgment
