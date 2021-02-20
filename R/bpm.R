@@ -38,22 +38,64 @@ FolderScripts = paste(FolderRoot, "/R/", sep="")
 setwd(FolderScripts)
 
 
-#library("googledrive") 
-library("readr", quietly = TRUE) 
-library("foreign", quietly = TRUE) 
-library("stringr", quietly = TRUE) 
-library("mldr", quietly = TRUE) 
-library("plyr", quietly = TRUE) 
-library("dplyr", quietly = TRUE) 
-library("reshape2", quietly = TRUE) 
-library("AggregateR", quietly = TRUE) 
-library("utiml", quietly = TRUE)
-library("RWeka", quietly = TRUE) 
-library("rJava", quietly = TRUE) 
-library("lattice", quietly = TRUE)
-library("numbers", quietly = TRUE)
-library("partitions", quietly = TRUE)
+##################################################################################################
+# ARGS COMMAND LINE                                                                              #
+##################################################################################################
+cat("\nArgs Command Line\n")
+args <- commandArgs(TRUE)
+cat(args, sep = "\n")
 
+
+##################################################################################################
+# LOAD MAIN.R                                                                                     #
+##################################################################################################
+cat("\nLoad Scripts\n")
+FolderScripts = paste(FolderRoot, "/R/", sep="")
+setwd(FolderScripts)
+source("run.R") 
+
+
+##################################################################################################
+# GET THE DIRECTORIES                                                                            #
+##################################################################################################
+cat("\nGet directories\n")
+diretorios <- directories()
+
+
+##################################################################################################
+# Read the dataset file with the information for each dataset                                    #
+##################################################################################################
+cat("\nOpen datasets.csv\n")
+setwd(FolderRoot)
+datasets <- data.frame(read.csv("datasets.csv"))
+n = nrow(datasets)
+
+
+##################################################################################################
+# Get the number of folds                                                                        #
+##################################################################################################
+number_dataset <- as.numeric(args[1])
+
+
+##################################################################################################
+# 
+##################################################################################################
+
+ds = datasets[number_dataset,]
+dataset_name <- toString(ds$Name) 
+cat("\nDataset: ", dataset_name)
+
+cat("\nCompute Bell Partitions for MultiLabel Classification")
+timeBPM = system.time(res <- execute(number_dataset))
+cat("\n")
+
+#res$partitions$groupsPerPartitions
+
+# C:\Users\elain\BellPartitionsMultiLabel\Results\emotions\Results
+Folder = paste(FolderRoot, "/Results/", dataset_name, sep="")
+setwd(Folder)
+save(timeBPM, file = paste(dataset_name, "-RunTimeFinal.rds", sep=""))
+save(res, file = paste(dataset_name, "-Results.rds", sep=""))
 
 
 ##################################################################################################
