@@ -1,5 +1,5 @@
 ##################################################################################################
-# BELL PARTITIONS MULTILABEL CLASSIFICATION                                                      #
+# CrossValidationMultiLabel                                                                      #
 # Copyright (C) 2021                                                                             #
 #                                                                                                #
 # This code is free software: you can redistribute it and/or modify it under the terms of the    #
@@ -27,10 +27,10 @@
 sistema = c(Sys.info())
 FolderRoot = ""
 if (sistema[1] == "Linux"){
-  FolderRoot = paste("/home/", sistema[7], "/BellPartitionsMultiLabel", sep="")
+  FolderRoot = paste("/home/", sistema[7], "/CrossValidationMultiLabel", sep="")
   setwd(FolderRoot)
 } else {
-  FolderRoot = paste("C:/Users/", sistema[7], "/BellPartitionsMultiLabel", sep="")
+  FolderRoot = paste("C:/Users/", sistema[7], "/CrossValidationMultiLabel", sep="")
   setwd(FolderRoot)
 }
 setwd(FolderRoot)
@@ -38,25 +38,25 @@ FolderScripts = paste(FolderRoot, "/R/", sep="")
 setwd(FolderScripts)
 
 
+##################################################################################################
+# LOAD EXTERNAL LIBRARIES                                                                        #
+##################################################################################################
+
 #library("googledrive") 
 library("readr", quietly = TRUE) 
 library("foreign", quietly = TRUE) 
 library("stringr", quietly = TRUE) 
-library("mldr", quietly = TRUE) 
-library("plyr", quietly = TRUE) 
-library("dplyr", quietly = TRUE) 
-library("reshape2", quietly = TRUE) 
-library("AggregateR", quietly = TRUE) 
-library("utiml", quietly = TRUE)
-library("RWeka", quietly = TRUE) 
 library("rJava", quietly = TRUE) 
-library("lattice", quietly = TRUE)
-library("numbers", quietly = TRUE)
-library("partitions", quietly = TRUE)
-
+library("RWeka", quietly = TRUE) 
+library("mldr", quietly = TRUE) 
+library("parallel", quietly = TRUE) 
+library("utiml", quietly = TRUE)
+library("foreach", quietly = TRUE) 
+library("doParallel", quietly = TRUE) 
 
 
 ##################################################################################################
 # Please, any errors, contact us: elainececiliagatto@gmail.com                                   #
 # Thank you very much!                                                                           #
 ##################################################################################################
+

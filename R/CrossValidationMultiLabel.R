@@ -109,6 +109,7 @@ CrossVal <- function(ds, dataset_name, number_folds, validation,
       treino_ds$.SCUMBLE = NULL
       treino_ds = data.frame(treino_ds)
       
+      
       #cat("\n\t\tTRAIN: Save CSV")
       str_csv_treino = paste(dataset_name, "-Split-Tr-", i, ".csv", sep="")
       write.csv(treino_ds, str_csv_treino, row.names = FALSE)
