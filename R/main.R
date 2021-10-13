@@ -54,62 +54,31 @@ source("CrossValidationMultiLabel.R")
 #       number_folds: number of folds to be created                                              #
 #   Return                                                                                       #
 ##################################################################################################
-CrossValidationMultiLabel <- function(number_dataset, number_folds, validation){
+CrossValidationMultiLabel <- function(folders, ds, dataset_name, number_cores,
+                                      number_dataset, number_folds, 
+                                      validation, FolderResults){
   
-  retorno = list()
-  
-  cat("\nOpen datasets")
-  setwd(FolderRoot)
-  datasets = data.frame(read.csv("datasets.csv"))
-  names(datasets)[1] = "Id"
-  n = nrow(datasets)
-  
-  cat("\nCreating folders")
-  folders1 = createDirs1(FolderRoot)
-  
-  FolderDS = paste(folders1$FolderResults, "/", dataset_name, sep="")
-  if(dir.exists(FolderDS)==TRUE){
-    cat("\n")
-  } else {
-    dir.create(FolderDS)  
-  }
-  
-  FolderCV = paste(FolderDS, "/CrossValidation", sep="")
-  if(dir.exists(FolderCV)==TRUE){
-    cat("\n")
-  } else {
-    dir.create(FolderCV)  
-  }
-  
-    cat("\nStart CV")
-    
-    cat("\nId: ", number_dataset)
-    setwd(FolderRoot)
-    datasets <- data.frame(read.csv("datasets.csv"))
-    n = nrow(datasets)
-    ds = datasets[number_dataset,]
-    dataset_name <- toString(ds$Name) 
-    cat("\nDataset: ", dataset_name)	
-    
-    cat("\nCall Cross Validation")
-    timeCVM = system.time(resCVM <- CrossVal(ds, dataset_name, number_folds, validation, 
-                                             folders1$FolderDatasets, folders1$FolderUtils, 
-                                             FolderCV, folders1$FolderOriginals))  
-    
     cat("\nCall Label Space")
-    timeLS = system.time(resLS <- LabelSpace(ds, dataset_name, number_folds, FolderDS, FolderCV))     
+  if(number_folds==1){
+    cat("\n Number folds == 1. Please, run again with a number_folds > 1!")
     
-    Folder = paste(FolderRoot, "/Results/", dataset_name, sep="")
-    setwd(Folder)
-    Runtime = rbind(timeCVM, timeLS)
-    write.csv(Runtime, "RunTime.csv")
+  } else {
     
-    retorno$CV = resCVM
-    retorno$LS = resLS
-    retorno$FolderDS = FolderDS
-    retorno$FolderCV = FolderCV
-    return(retorno)
+    cat("\n Compute Cross Validation")
+    timeCVM = system.time(resCVM <- CrossVal(folders, ds, dataset_name, number_cores,
+                                             number_dataset, number_folds, 
+                                             validation, FolderResults))
     
+    cat("\nTreat Label Space Information")
+    timeLS = system.time(resLS <- LabelSpace(folders, ds, dataset_name, number_cores,
+                                             number_dataset, number_folds))       
+  }
+  
+    
+  setwd(folders$FolderDS)
+  Runtime = rbind(timeCVM, timeLS)
+  write.csv(Runtime, "RunTime.csv")
+  
 }
 
 ##################################################################################################

@@ -30,75 +30,114 @@ if (sistema[1] == "Linux"){
   setwd(FolderRoot)
 }
 setwd(FolderRoot)
-
-
-##################################################################################################
-# ARGS COMMAND LINE                                                                              #
-##################################################################################################
-cat("\nArgs Command Line\n")
-args <- commandArgs(TRUE)
-cat(args, sep = "\n")
-
+FolderScripts = paste(FolderRoot, "/R", sep="")
 
 ##################################################################################################
-# LOAD MAIN.R                                                                                     #
+# Options Configuration                                                                          #
 ##################################################################################################
-cat("\nLoad Scripts\n")
-FolderScripts = paste(FolderRoot, "/R/", sep="")
-setwd(FolderScripts)
-source("main.R") 
-
-
-##################################################################################################
-# GET THE DIRECTORIES                                                                            #
-##################################################################################################
-cat("\nGet directories\n")
-diretorios <- createDirs1(FolderRoot)
+options(java.parameters = "-Xmx64g")
+options(show.error.messages = TRUE)
+options(scipen=30)
 
 
 ##################################################################################################
 # Read the dataset file with the information for each dataset                                    #
 ##################################################################################################
-cat("\nOpen datasets.csv\n")
 setwd(FolderRoot)
 datasets <- data.frame(read.csv("datasets.csv"))
-n = nrow(datasets)
 
 
 ##################################################################################################
-# Get the number of folds                                                                        #
+# ARGS COMMAND LINE                                                                              #
+##################################################################################################
+args <- commandArgs(TRUE)
+
+
+##################################################################################################
+# Get dataset information                                                                        #
+##################################################################################################
+ds <- datasets[args[1],]
+
+
+##################################################################################################
+# Get dataset information                                                                        #
 ##################################################################################################
 number_dataset <- as.numeric(args[1])
+cat("\n number_dataset \t ", number_dataset)
 
+
+##################################################################################################
+# Get the number of cores                                                                        #
+##################################################################################################
+number_cores <- as.numeric(args[2])
+cat("\n cores \t ", number_cores)
 
 
 ##################################################################################################
 # Get the number of folds                                                                        #
 ##################################################################################################
-number_folds <- as.numeric(args[2])
+number_folds <- as.numeric(args[3])
+cat("\n folds \t ", number_folds)
 
+##################################################################################################
+# Validation
+##################################################################################################
+validation <- as.numeric(args[4])
+cat("\n validation \t ", validation)
 
 
 ##################################################################################################
-# Validation?                                                                                    #
+# folder results                                                                                 #
 ##################################################################################################
-validation <- as.numeric(args[3])
+FolderResults <- toString(args[5])
+cat("\n folder \t ", FolderResults)
 
 
-
 ##################################################################################################
-#
+# Get dataset name                                                                               #
 ##################################################################################################
-ds = datasets[number_dataset,]
 dataset_name <- toString(ds$Name) 
-cat("\nDataset: ", dataset_name)
-  
+cat("\n nome \t ", dataset_name)
+
+
+##################################################################################################
+# DON'T RUN -- it's only for test the code
+# ds <- datasets[29,]
+# dataset_name = ds$Name
+# number_dataset = ds$Id
+# number_cores = 10
+# number_folds = 10
+# FolderResults = "/dev/shm/res"
+# validation = 1
+##################################################################################################
+
+ 
+##################################################################################################
+# LOAD RUN.R                                                                                     #
+##################################################################################################
+setwd(FolderScripts)
+source("main.R")
+ 
+ 
+
+##################################################################################################
+# CREATING FOLDERS                                                                               #
+##################################################################################################
+cat("\nCreating folders")
+folders = createDirs(FolderResults)
+
+
+##################################################################################################
+# CREATING FOLDERS                                                                               #
+##################################################################################################  
 cat("\nCross Validation")
-timeCVM = system.time(res <- CrossValidationMultiLabel(number_dataset, number_folds, validation))
+timeCVM = system.time(res <- CrossValidationMultiLabel(folders, ds, dataset_name, number_cores,
+                                                       number_dataset, number_folds, 
+                                                       validation, folderResults))
 cat("\n")
 
-Folder = paste(FolderRoot, "/Results/", dataset_name, sep="")
-setwd(Folder)
+
+setwd(folders$FolderDS)
 save(timeCVM, file = paste(dataset_name, "-RunTimeFinal.rds", sep=""))
 save(res, file = paste(dataset_name, "-Results.rds", sep=""))
 

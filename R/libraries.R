@@ -53,6 +53,7 @@ library("parallel", quietly = TRUE)
 library("utiml", quietly = TRUE)
 library("foreach", quietly = TRUE) 
 library("doParallel", quietly = TRUE) 
+library("dplyr", quietly = TRUE) 
 
 
 ##################################################################################################

@@ -65,42 +65,82 @@ converteArff <- function(arg1, arg2, arg3, FolderUtils){
 #     Return:                                                                                    #
 
 ##################################################################################################
-createDirs1 <- function(FolderRoot){
+createDirs <- function(FolderResults){
   
   retorno = list()
   
-  FolderUtils = paste(FolderRoot, "/utils", sep="")
-  if(dir.exists(FolderUtils)==TRUE){
-    cat("\n")
-  } else {
-    dir.create(FolderUtils)
-  }
-  
-  FolderDatasets = paste(FolderRoot, "/Datasets", sep="")
-  if(dir.exists(FolderDatasets)==TRUE){
-    cat("\n")
-  } else {
-    dir.create(FolderDatasets)
-  }
-  
-  FolderResults = paste(FolderRoot, "/Results", sep="")
-  if(dir.exists(FolderResults)==TRUE){
-    cat("\n")
-  } else {
+  FolderResults = FolderResults
+  if(dir.exists(FolderResults)==FALSE){
     dir.create(FolderResults)  
   }
   
+  FolderScripts = paste(FolderRoot, "/R", sep="")
+  if(dir.exists(FolderScripts)==FALSE){
+    dir.create(FolderScripts)  
+  }
+  
+  FolderUtils = paste(FolderRoot, "/utils", sep="")
+  if(dir.exists(FolderUtils)==FALSE){
+    dir.create(FolderUtils)    
+  }
+  
+  FolderDatasets = paste(FolderRoot, "/Datasets", sep="")
+  if(dir.exists(FolderDatasets)==FALSE){
+    dir.create(FolderDatasets)
+  } 
+  
   FolderOriginals = paste(FolderDatasets, "/Originals", sep="")
-  if(dir.exists(FolderOriginals)==TRUE){
-    cat("\n")
-  } else {
+  if(dir.exists(FolderOriginals)==FALSE){
     dir.create(FolderOriginals)  
   }
   
+  FolderCV = paste(FolderResults, "/CV", sep="")
+  if(dir.exists(FolderCV)==FALSE){
+    dir.create(FolderCV)  
+  }
+  
+  FolderTR = paste(FolderCV, "/TR", sep="")
+  if(dir.exists(FolderTR)==FALSE){
+    dir.create(FolderTR)  
+  }
+  
+  FolderTS = paste(FolderCV, "/TS", sep="")
+  if(dir.exists(FolderTS)==FALSE){
+    dir.create(FolderTS)  
+  }
+  
+  FolderVL = paste(FolderCV, "/VL", sep="")
+  if(dir.exists(FolderVL)==FALSE){
+    dir.create(FolderVL)  
+  }
+  
+  FolderDS = paste(FolderRoot, "/", dataset_name, sep="")
+  if(dir.exists(FolderDS)==FALSE){
+    dir.create(FolderDS)  
+  } 
+  
+  FolderLS = paste(FolderCV, "/LabelSpace", sep="")
+  if(dir.exists(FolderLS)==FALSE){
+    dir.create(FolderLS)      
+  }
+  
+  FolderNamesLabels = paste(FolderCV, "/NamesLabels", sep="")
+  if(dir.exists(FolderNamesLabels)==FALSE){
+    dir.create(FolderNamesLabels)  
+  }
+
+  retorno$FolderDS = FolderDS
+  retorno$FolderLS = FolderLS
+  retorno$FolderNamesLabels = FolderNamesLabels
+  retorno$FolderResults = FolderResults
+  retorno$FolderScripts = FolderScripts
   retorno$FolderUtils = FolderUtils
   retorno$FolderDatasets = FolderDatasets
   retorno$FolderOriginals = FolderOriginals
-  retorno$FolderResults = FolderResults
+  retorno$FolderCV = FolderCV
+  retorno$FolderTR = FolderTR
+  retorno$FolderTS = FolderTS
+  retorno$FolderVL = FolderVL
   
   return(retorno)
   
