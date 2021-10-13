@@ -32,7 +32,7 @@ The _"Id"_ of the dataset is a mandatory parameter in the command line to run al
 # Run
 
 ```
-Rscript cvm.R [number_dataset] [number_folds] [validation]
+Rscript cvm.R [number_dataset] [number_folds] [validation] [folder]
 ```
 
 Where:
@@ -43,12 +43,13 @@ _number_folds_ is the number of folds you want for cross-validation
 
 _validation_ 0 if you dont want the validation set and 1 if you want
 
+_folder_ temporary folder like SHM or SCRATCH to speed up the process
 
 Example:
 
 With Validation
 ```
-Rscript cvm.R 2 5 1
+Rscript cvm.R 2 5 1 "/dev/shm/results"
 ```
 
 This code will generate a 5 folds cross-valdation for the birds dataset with train, test and validation sets.
@@ -56,7 +57,7 @@ This code will generate a 5 folds cross-valdation for the birds dataset with tra
 
 Whithout Validation
 ```
-Rscript cvm.R 2 6 0
+Rscript cvm.R 2 6 0 "/dev/shm/cv"
 ```
 
 This code will generate a 6 folds cross-valdation for the birds dataset with train and test sets.
