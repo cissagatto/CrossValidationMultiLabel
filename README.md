@@ -2,7 +2,7 @@
 A code to execute and save cross-validation in multilabel classification. This code is part of my doctoral research.
 
 # How to cite 
-@misc{Gatto2021, author = {Gatto, E. C.}, title = {CrossValidationMultiLabel}, year = {2021}, publisher = {GitHub}, journal = {GitHub repository}, howpublished = {\url{https://github.com/cissagatto/CrossValidationMultiLabel}}}
+@misc{Gatto2021, author = {Gatto, E. C.}, title = {Cross-Validation for MultiLabel Classification}, year = {2021}, publisher = {GitHub}, journal = {GitHub repository}, howpublished = {\url{https://github.com/cissagatto/CrossValidationMultiLabel}}}
 
 ## Scripts
 This source code consists of an R project for R Studio and the following R scripts:
