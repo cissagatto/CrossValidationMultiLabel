@@ -113,29 +113,98 @@ cat("\n nome \t ", dataset_name)
 
 
 ##################################################################################################
-cat("\nCopy FROM google drive \n")
-destino = paste(FolderRoot, "/Datasets/Originais/", dataset_name, sep="")
-origem = paste("cloud:elaine/Datasets/Originais/", dataset_name, ".arff", sep="")
-comando = paste("rclone -v copy ", origem, " ", destino, sep="")
-cat("\n", comando, "\n") 
-a = print(system(comando))
-a = as.numeric(a)
-if(a != 0) {
-  stop("Erro RCLONE")
-  quit("yes")
-}
+# cat("\nCopy FROM google drive \n")
+
+##################################################################################################
+# Validation
+##################################################################################################
+validation <- as.numeric(args[4])
+cat("\n validation \t ", validation)
 
 
-destino = paste(FolderRoot, "/datasets/", dataset_name, sep="")
-origem = paste("cloud:elaine/Datasets/Originais/", dataset_name, ".xml", sep="")
-comando = paste("rclone -v copy ", origem, " ", destino, sep="")
-cat("\n", comando, "\n") 
-a = print(system(comando))
-a = as.numeric(a)
-if(a != 0) {
-  stop("Erro RCLONE")
-  quit("yes")
-}
+##################################################################################################
+# folder results                                                                                 #
+##################################################################################################
+FolderResults <- toString(args[5])
+cat("\n folder \t ", FolderResults)
+
+
+##################################################################################################
+# Get dataset name                                                                               #
+##################################################################################################
+dataset_name <- toString(ds$Name) 
+cat("\n nome \t ", dataset_name)
+
+
+##################################################################################################
+# DON'T RUN -- it's only for test the code
+# ds <- datasets[29,]
+# dataset_name = ds$Name
+# number_dataset = ds$Id
+# number_cores = 10
+# number_folds = 10
+# FolderResults = "/dev/shm/res"
+# validation = 1
+##################################################################################################
+
+
+##################################################################################################
+# destino = paste(FolderRoot, "/Datasets/Originais/", dataset_name, sep="")
+
+##################################################################################################
+# Validation
+##################################################################################################
+validation <- as.numeric(args[4])
+cat("\n validation \t ", validation)
+
+
+##################################################################################################
+# folder results                                                                                 #
+##################################################################################################
+FolderResults <- toString(args[5])
+cat("\n folder \t ", FolderResults)
+
+
+##################################################################################################
+# Get dataset name                                                                               #
+##################################################################################################
+dataset_name <- toString(ds$Name) 
+cat("\n nome \t ", dataset_name)
+
+
+##################################################################################################
+# DON'T RUN -- it's only for test the code
+# ds <- datasets[29,]
+# dataset_name = ds$Name
+# number_dataset = ds$Id
+# number_cores = 10
+# number_folds = 10
+# FolderResults = "/dev/shm/res"
+# validation = 1
+##################################################################################################
+
+
+##################################################################################################
+# origem = paste("cloud:elaine/Datasets/Originais/", dataset_name, ".arff", sep="")
+# comando = paste("rclone -v copy ", origem, " ", destino, sep="")
+# cat("\n", comando, "\n") 
+# a = print(system(comando))
+# a = as.numeric(a)
+# if(a != 0) {
+#   stop("Erro RCLONE")
+#   quit("yes")
+# }
+
+# destino = paste(FolderRoot, "/datasets/", dataset_name, sep="")
+# origem = paste("cloud:elaine/Datasets/Originais/", dataset_name, ".xml", sep="")
+# comando = paste("rclone -v copy ", origem, " ", destino, sep="")
+# cat("\n", comando, "\n") 
+# a  = print(system(comando))
+# a = as.numeric(a)
+# if(a != 0) {
+#   stop("Erro RCLONE")
+#   quit("yes")
+# }
 
  
 ##################################################################################################
