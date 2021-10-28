@@ -94,22 +94,22 @@ createDirs <- function(FolderResults){
     dir.create(FolderOriginals)  
   }
   
-  FolderCV = paste(FolderResults, "/CV", sep="")
+  FolderCV = paste(FolderResults, "/CrossValidation", sep="")
   if(dir.exists(FolderCV)==FALSE){
     dir.create(FolderCV)  
   }
   
-  FolderTR = paste(FolderCV, "/TR", sep="")
+  FolderTR = paste(FolderCV, "/Tr", sep="")
   if(dir.exists(FolderTR)==FALSE){
     dir.create(FolderTR)  
   }
   
-  FolderTS = paste(FolderCV, "/TS", sep="")
+  FolderTS = paste(FolderCV, "/Ts", sep="")
   if(dir.exists(FolderTS)==FALSE){
     dir.create(FolderTS)  
   }
   
-  FolderVL = paste(FolderCV, "/VL", sep="")
+  FolderVL = paste(FolderCV, "/Vl", sep="")
   if(dir.exists(FolderVL)==FALSE){
     dir.create(FolderVL)  
   }

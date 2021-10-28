@@ -67,22 +67,29 @@ cat("\n number_dataset \t ", number_dataset)
 
 
 ##################################################################################################
+# Get the number of cores                                                                        #
+##################################################################################################
+number_cores <- as.numeric(args[2])
+cat("\n cores \t ", number_cores)
+
+
+##################################################################################################
 # Get the number of folds                                                                        #
 ##################################################################################################
-number_folds <- as.numeric(args[2])
+number_folds <- as.numeric(args[3])
 cat("\n folds \t ", number_folds)
 
 ##################################################################################################
 # Validation
 ##################################################################################################
-validation <- as.numeric(args[3])
+validation <- as.numeric(args[4])
 cat("\n validation \t ", validation)
 
 
 ##################################################################################################
 # folder results                                                                                 #
 ##################################################################################################
-FolderResults <- toString(args[4])
+FolderResults <- toString(args[5])
 cat("\n folder \t ", FolderResults)
 
 
@@ -103,6 +110,32 @@ cat("\n nome \t ", dataset_name)
 # FolderResults = "/dev/shm/res"
 # validation = 1
 ##################################################################################################
+
+
+##################################################################################################
+cat("\nCopy FROM google drive \n")
+destino = paste(FolderRoot, "/Datasets/Originais/", dataset_name, sep="")
+origem = paste("cloud:elaine/Datasets/Originais/", dataset_name, ".arff", sep="")
+comando = paste("rclone -v copy ", origem, " ", destino, sep="")
+cat("\n", comando, "\n") 
+a = print(system(comando))
+a = as.numeric(a)
+if(a != 0) {
+  stop("Erro RCLONE")
+  quit("yes")
+}
+
+
+destino = paste(FolderRoot, "/datasets/", dataset_name, sep="")
+origem = paste("cloud:elaine/Datasets/Originais/", dataset_name, ".xml", sep="")
+comando = paste("rclone -v copy ", origem, " ", destino, sep="")
+cat("\n", comando, "\n") 
+a = print(system(comando))
+a = as.numeric(a)
+if(a != 0) {
+  stop("Erro RCLONE")
+  quit("yes")
+}
 
  
 ##################################################################################################
@@ -136,13 +169,13 @@ save(res, file = paste(dataset_name, "-Results.rds", sep=""))
 
 ########################################################################################################################
 # cat("\n Copy to google drive")
-# origem = ???
-# destino = paste("cloud:elaine/CrossValidation/", dataset_name, sep="")
+# origem = 
+# destino = paste("cloud:elaine/CrossValidation/CrossValidation_WithValidation/", dataset_name, sep="")
 # comando = paste("rclone copy ", origem, " ", destino, sep="")
 # cat("\n", comando, "\n") 
 # a = print(system(comando))
 # a = as.numeric(a)
 # if(a != 0) {
-# stop("Erro RCLONE")
-# quit("yes")
+#  stop("Erro RCLONE")
+#  quit("yes")
 # }
