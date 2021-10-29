@@ -34,6 +34,8 @@ The *Id* of the dataset is a mandatory parameter in the command line to run all 
 
 # Run
 
+To run, first enter the folder _C:/Users/[username]/CrossValidationMultiLabel or _/home/[username]/CrossValidationMultiLabel in a terminal and the type:
+
 ```
 Rscript cvm.R [number_dataset] [number_cores] [number_folds] [validation] [folder]
 ```
@@ -52,15 +54,15 @@ _folder_ temporary folder like SHM or SCRATCH to speed up the process
 
 Example:
 
-With Validation
+1. With Validation
 ```
 Rscript cvm.R 2 10 10 1 "/dev/shm/results"
 ```
 
-This code will generate a 10 folds cross-valdation, using 20 cores, for the birds (2) dataset with train, test and validation sets.
+This code will generate a 10 folds cross-valdation, using 20 cores, for the birds (2) dataset with train, test and validation sets. If you send _number_folds_ = 1 the code will break. For now, this code is specifcally to build a X-Fold Cross-Validation file. Then, you need to pass a value greater than 1 to _number_folds_ parametrer. If you want to use holdout, please consulte the UTIML tutorial https://github.com/rivolli/utiml.
 
 
-Whithout Validation
+2. Whithout Validation
 ```
 Rscript cvm.R 2 1 10 0 "/dev/shm/cv"
 ```
