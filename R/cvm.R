@@ -169,13 +169,20 @@ save(res, file = paste(dataset_name, "-Results.rds", sep=""))
 
 ########################################################################################################################
 # cat("\n Copy to google drive")
-# origem = 
-# destino = paste("cloud:elaine/CrossValidation/CrossValidation_WithValidation/", dataset_name, sep="")
-# comando = paste("rclone copy ", origem, " ", destino, sep="")
-# cat("\n", comando, "\n") 
-# a = print(system(comando))
-# a = as.numeric(a)
-# if(a != 0) {
-#  stop("Erro RCLONE")
-#  quit("yes")
-# }
+origem = folders$FolderDS
+destino = paste("cloud:Datasets/CrossValidation_WithValidation/", dataset_name, sep="")
+comando = paste("rclone copy ", origem, " ", destino, sep="")
+cat("\n", comando, "\n") 
+a = print(system(comando))
+a = as.numeric(a)
+if(a != 0){
+  stop("Erro RCLONE")
+  quit("yes")
+}
+
+cat("\n delete folder temp")
+str2 = paste("rm -r ", folders$FolderDS)
+print(system(str2))
+
+gc()
+
