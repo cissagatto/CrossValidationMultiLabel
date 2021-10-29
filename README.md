@@ -59,7 +59,7 @@ Example:
 Rscript cvm.R 2 10 10 1 "/dev/shm/results"
 ```
 
-This code will generate a 10 folds cross-valdation, using 20 cores, for the birds (2) dataset with train, test and validation sets. If you send _number_folds_ = 1 the code will break. For now, this code is specifcally to build a X-Fold Cross-Validation file. Then, you need to pass a value greater than 1 to _number_folds_ parametrer. If you want to use holdout, please consulte the UTIML tutorial https://github.com/rivolli/utiml.
+This code will generate a 10 folds cross-valdation, using 10 cores, for the birds (2) dataset with train, test and validation sets. If you send _number_folds_ = 1 the code will break. For now, this code is specifcally to build a X-Fold Cross-Validation file. Then, you need to pass a value greater than 1 to _number_folds_ parametrer. If you want to use holdout, please consulte the UTIML tutorial https://github.com/rivolli/utiml.
 
 
 2. Whithout Validation
@@ -68,6 +68,9 @@ Rscript cvm.R 2 1 10 0 "/dev/shm/cv"
 ```
 
 This code will generate a 10 folds cross-valdation, using 1 core, for the birds (2) dataset with train and test sets.
+
+## Folder Structure
+<img src="https://github.com/cissagatto/CrossValidationMultiLabel/blob/main/images/folder_strucutre_mlcv.png" width="300">
 
 ## Acknowledgment
 This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
