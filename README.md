@@ -12,6 +12,7 @@ This source code consists of an R project for R Studio and the following R scrip
 3. CrossValidationMultiLabel
 4. main
 5. cvm
+6. generateJobsConda
 
 ## Multi-Label Datasets
 You can download the multi-label datasets at this link: https://cometa.ujaen.es/datasets/
