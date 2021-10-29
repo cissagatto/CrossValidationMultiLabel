@@ -34,12 +34,14 @@ The *Id* of the dataset is a mandatory parameter in the command line to run all 
 # Run
 
 ```
-Rscript cvm.R [number_dataset] [number_folds] [validation] [folder]
+Rscript cvm.R [number_dataset] [number_cores] [number_folds] [validation] [folder]
 ```
 
 Where:
 
 _number_dataset_ is the dataset number in the datasets.csv file
+
+_number_cores_ is the number of cores that you wanto to use in paralel
 
 _number_folds_ is the number of folds you want for cross-validation
 
