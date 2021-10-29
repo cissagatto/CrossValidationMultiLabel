@@ -34,7 +34,7 @@ The *Id* of the dataset is a mandatory parameter in the command line to run all 
 
 # Run
 
-To run, first enter the folder _C:/Users/[username]/CrossValidationMultiLabel or _/home/[username]/CrossValidationMultiLabel in a terminal and the type:
+To run, first enter the folder _C:/Users/[username]/CrossValidationMultiLabel_ or _/home/[username]/CrossValidationMultiLabel_ in a terminal and the type:
 
 ```
 Rscript cvm.R [number_dataset] [number_cores] [number_folds] [validation] [folder]
