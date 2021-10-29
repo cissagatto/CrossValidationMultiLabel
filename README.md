@@ -53,18 +53,18 @@ Example:
 
 With Validation
 ```
-Rscript cvm.R 2 5 1 "/dev/shm/results"
+Rscript cvm.R 2 10 10 1 "/dev/shm/results"
 ```
 
-This code will generate a 5 folds cross-valdation for the birds dataset with train, test and validation sets.
+This code will generate a 10 folds cross-valdation for the birds dataset with train, test and validation sets.
 
 
 Whithout Validation
 ```
-Rscript cvm.R 2 6 0 "/dev/shm/cv"
+Rscript cvm.R 2 1 10 0 "/dev/shm/cv"
 ```
 
-This code will generate a 6 folds cross-valdation for the birds dataset with train and test sets.
+This code will generate a 10 folds cross-valdation for the birds dataset with train and test sets.
 
 ## Acknowledgment
 This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
