@@ -89,7 +89,7 @@ createDirs <- function(FolderResults){
     dir.create(FolderDatasets)
   } 
   
-  FolderOriginals = paste(FolderDatasets, "/Originals", sep="")
+  FolderOriginals = paste(FolderDatasets, "/Originais", sep="")
   if(dir.exists(FolderOriginals)==FALSE){
     dir.create(FolderOriginals)  
   }
@@ -119,12 +119,12 @@ createDirs <- function(FolderResults){
     dir.create(FolderDS)  
   } 
   
-  FolderLS = paste(FolderCV, "/LabelSpace", sep="")
+  FolderLS = paste(FolderResults, "/LabelSpace", sep="")
   if(dir.exists(FolderLS)==FALSE){
     dir.create(FolderLS)      
   }
   
-  FolderNamesLabels = paste(FolderCV, "/NamesLabels", sep="")
+  FolderNamesLabels = paste(FolderResults, "/NamesLabels", sep="")
   if(dir.exists(FolderNamesLabels)==FALSE){
     dir.create(FolderNamesLabels)  
   }

@@ -33,6 +33,7 @@ setwd(FolderRoot)
 FolderScripts = paste(FolderRoot, "/R/", sep="")
 
 
+
 ##################################################################################################
 # LOAD SOURCES                                                                                   #
 ##################################################################################################
@@ -45,6 +46,7 @@ source("utils.R")
 setwd(FolderScripts)
 source("CrossValidationMultiLabel.R")
 
+
 ##################################################################################################
 # MAIN                                                                                           #
 #   Objective                                                                                    #
@@ -54,11 +56,13 @@ source("CrossValidationMultiLabel.R")
 #       number_folds: number of folds to be created                                              #
 #   Return                                                                                       #
 ##################################################################################################
-CrossValidationMultiLabel <- function(folders, ds, dataset_name, number_cores,
+CrossValidationMultiLabel <- function(folders, ds, dataset_name,
                                       number_dataset, number_folds, 
                                       validation, FolderResults){
   
-    cat("\nCall Label Space")
+  cat("\nCreating folders")
+  folders = createDirs(FolderResults)
+  
   if(number_folds==1){
     cat("\n Number folds == 1. Please, run again with a number_folds > 1!")
     

@@ -49,7 +49,12 @@ CrossVal <- function(folders, ds, dataset_name, number_cores,
   
   retorno = list()
   
-  setwd(folders$FolderOriginals)
+  cat("\nCreating folders")
+  folders = createDirs(FolderResults)
+  
+  Folder = paste(folders$FolderOriginals, "/", dataset_name, sep="")
+  setwd(Folder)
+  #arquivo = foreign::read.arff(paste(dataset_name, ".arff", sep=""))
   arquivo = mldr(dataset_name)
   
   nomesRotulos = c(colnames(arquivo$dataset[ds$LabelStart:ds$LabelEnd]))
@@ -326,8 +331,16 @@ LabelSpace <- function(folders, ds, dataset_name, number_cores,
   str1 = paste("cp -r ", folders$FolderCV, " ", folders$FolderDS, sep="")
   print(system(str1))
   
+  cat("\nCopy files to the root results folder\n")
+  str1 = paste("cp -r ", folders$FolderNamesLabels, " ", folders$FolderDS, sep="")
+  print(system(str1))
+  
+  cat("\nCopy files to the root results folder\n")
+  str1 = paste("cp -r ", folders$FolderLS, " ", folders$FolderDS, sep="")
+  print(system(str1))
+  
   cat("\n delete folder temp")
-  str2 = paste("rm -r ", folders$FolderCV)
+  str2 = paste("rm -r ", folders$FolderResults)
   print(system(str2))
   
   retorno$NamesLabels = namesLabels
