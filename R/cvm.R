@@ -79,6 +79,7 @@ cat("\n cores \t ", number_cores)
 number_folds <- as.numeric(args[3])
 cat("\n folds \t ", number_folds)
 
+
 ##################################################################################################
 # Validation
 ##################################################################################################
@@ -102,40 +103,40 @@ cat("\n nome \t ", dataset_name)
 
 ##################################################################################################
 # DON'T RUN -- it's only for test the code
-#  ds <- datasets[30,]
-#  dataset_name = ds$Name
-#  number_dataset = ds$Id
+# ds <- datasets[30,]
+# dataset_name = ds$Name
+# number_dataset = ds$Id
 # number_cores = 10
-#  number_folds = 10
+# number_folds = 10
 # FolderResults = "/dev/shm/res"
 # validation = 1
 ##################################################################################################
 
 
 ##################################################################################################
-cat("\nCopy FROM google drive \n")
-destino = paste(FolderRoot, "/Datasets/Originais/", dataset_name, sep="")
-origem = paste("cloud:Datasets/Originais/", dataset_name, ".arff", sep="")
-comando = paste("rclone -v copy ", origem, " ", destino, sep="")
-cat("\n", comando, "\n") 
-a = print(system(comando))
-a = as.numeric(a)
-if(a != 0) {
-  stop("Erro RCLONE")
-  quit("yes")
-}
+# cat("\nCopy FROM google drive \n")
+# destino = paste(FolderRoot, "/Datasets/Originais/", dataset_name, sep="")
+# origem = paste("cloud:Datasets/Originais/", dataset_name, ".arff", sep="")
+# comando = paste("rclone -v copy ", origem, " ", destino, sep="")
+# cat("\n", comando, "\n") 
+# a = print(system(comando))
+# a = as.numeric(a)
+# if(a != 0) {
+#   stop("Erro RCLONE")
+#   quit("yes")
+# }
 
 
-destino = paste(FolderRoot, "/Datasets/Originais/", dataset_name, sep="")
-origem = paste("cloud:Datasets/Originais/", dataset_name, ".xml", sep="")
-comando = paste("rclone -v copy ", origem, " ", destino, sep="")
-cat("\n", comando, "\n") 
-a = print(system(comando))
-a = as.numeric(a)
-if(a != 0) {
-  stop("Erro RCLONE")
-  quit("yes")
-}
+# destino = paste(FolderRoot, "/Datasets/Originais/", dataset_name, sep="")
+# origem = paste("cloud:Datasets/Originais/", dataset_name, ".xml", sep="")
+# comando = paste("rclone -v copy ", origem, " ", destino, sep="")
+# cat("\n", comando, "\n") 
+# a = print(system(comando))
+# a = as.numeric(a)
+# if(a != 0) {
+#   stop("Erro RCLONE")
+#   quit("yes")
+# }
 
  
 ##################################################################################################
@@ -169,20 +170,34 @@ save(res, file = paste(dataset_name, "-Results.rds", sep=""))
 
 ########################################################################################################################
 # cat("\n Copy to google drive")
-origem = folders$FolderDS
-destino = paste("cloud:Datasets/CrossValidation_WithValidation/", dataset_name, sep="")
-comando = paste("rclone copy ", origem, " ", destino, sep="")
-cat("\n", comando, "\n") 
-a = print(system(comando))
-a = as.numeric(a)
-if(a != 0){
-  stop("Erro RCLONE")
-  quit("yes")
-}
+# origem = folders$FolderDS
+# destino = paste("cloud:Datasets/CrossValidation_WithValidation/", dataset_name, sep="")
+# comando = paste("rclone copy ", origem, " ", destino, sep="")
+# cat("\n", comando, "\n") 
+# a = print(system(comando))
+# a = as.numeric(a)
+# if(a != 0){
+#   stop("Erro RCLONE")
+#   quit("yes")
+# }
 
+########################################################################################################################
 cat("\n delete folder temp")
 str2 = paste("rm -r ", folders$FolderDS)
 print(system(str2))
 
+##################################################################################################
+rm(list = ls())
 gc()
+
+cat("\n##################################################################################################")
+cat("\n# END. Thanks God!                                                                               #") 
+cat("\n##################################################################################################")
+cat("\n\n\n\n") 
+
+
+##################################################################################################
+# Please, any errors, contact us: elainececiliagatto@gmail.com                                   #
+# Thank you very much!                                                                           #
+##################################################################################################
 
