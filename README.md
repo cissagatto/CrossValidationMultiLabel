@@ -23,10 +23,10 @@ You can download the multi-label datasets at this link: https://cometa.ujaen.es/
 Confirms if the folder *utils* contains the following files: *Clus.jar*, *R_csv_2_arff.jar*, and *weka.jar*, and also the folder *lib* with *commons-math-1.0.jar*, *jgap.jar*, weka.jar and *Clus.jar.* Without these jars, the code not runs. 
 
 ### Step-2
-Place a copy of this code in _C:/Users/[username]/CrossValidationMultiLabel or _/home/[username]/CrossValidationMultiLabel. Our files are configured to obtain the paths of the folders from this path. You can change this in the code if you want.
+Copy this code and place it where you want. The folder configurations is "~/CrossValidationMultiLabel"
 
 ### Step-3
-A file called _datasets.csv_ must be in the *root project* folder. This file is used to read information about the datasets and they are used in the code. All 74 datasets available in *Cometa* are in this file. If you want to use another dataset, please, add the following information about the dataset in the file:
+A file called _datasets_original.csv_ must be in the *root project* folder. This file is used to read information about the datasets and they are used in the code. All 74 datasets available in *Cometa* are in this file. If you want to use another dataset, please, add the following information about the dataset in the file:
 
 _Id, Name, Domain, Labels, Instances, Attributes, Inputs, Labelsets, Single, Max freq, Card, Dens, MeanIR, Scumble, TCS, AttStart, AttEnd, LabelStart, LabelEnd, xn, yn, gridn_
 
@@ -34,7 +34,7 @@ The *Id* of the dataset is a mandatory parameter in the command line to run all 
 
 # Run
 
-To run, first enter the folder _C:/Users/[username]/CrossValidationMultiLabel_ or _/home/[username]/CrossValidationMultiLabel_ in a terminal and the type:
+To run, first enter the folder ~/CrossValidationMultiLabel in a terminal and the type:
 
 ```
 Rscript cvm.R [number_dataset] [number_cores] [number_folds] [validation] [folder]
