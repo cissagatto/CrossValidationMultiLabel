@@ -20,16 +20,7 @@
 ##################################################################################################
 # Configures the workspace according to the operating system                                     #
 ##################################################################################################
-sistema = c(Sys.info())
-FolderRoot = ""
-if (sistema[1] == "Linux"){
-  FolderRoot = paste("/home/", sistema[7], "/CrossValidationMultiLabel", sep="")
-  setwd(FolderRoot)
-} else {
-  FolderRoot = paste("C:/Users/", sistema[7], "/CrossValidationMultiLabel", sep="")
-  setwd(FolderRoot)
-}
-setwd(FolderRoot)
+FolderRoot = "~/CrossValidationMultiLabel"
 FolderScripts = paste(FolderRoot, "/R/", sep="")
 
 
@@ -60,7 +51,6 @@ CrossValidationMultiLabel <- function(folders, ds, dataset_name,
                                       number_dataset, number_folds, 
                                       validation, FolderResults){
   
-  cat("\nCreating folders")
   folders = createDirs(FolderResults)
   
   if(number_folds==1){
@@ -68,7 +58,7 @@ CrossValidationMultiLabel <- function(folders, ds, dataset_name,
     
   } else {
     
-    cat("\n Compute Cross Validation")
+    cat("\nCompute Cross Validation")
     timeCVM = system.time(resCVM <- CrossVal(folders, ds, dataset_name, number_cores,
                                              number_dataset, number_folds, 
                                              validation, FolderResults))
