@@ -12,7 +12,7 @@ This source code consists of an R project for R Studio and the following R scrip
 3. CrossValidationMultiLabel
 4. main
 5. cvm
-6. generateJobsConda
+
 
 ## Multi-Label Datasets
 You can download the multi-label datasets at this link: https://cometa.ujaen.es/datasets/
@@ -34,7 +34,7 @@ The *Id* of the dataset is a mandatory parameter in the command line to run all 
 
 # Run
 
-To run, first enter the folder ~/CrossValidationMultiLabel in a terminal and the type:
+To run, first enter the folder ~/CrossValidationMultiLabel/R in a terminal and the type:
 
 ```
 Rscript cvm.R [number_dataset] [number_cores] [number_folds] [validation] [folder]
@@ -73,7 +73,7 @@ This code will generate a 10 folds cross-valdation, using 1 core, for the birds 
 <img src="https://github.com/cissagatto/CrossValidationMultiLabel/blob/main/images/folder_strucutre_mlcv.png" width="300">
 
 ## DOWNLOAD RESULTS
-[Click here](https://www.4shared.com/folder/YpGZWzjQ/Datasets-Cross-Validation.html)
+[Click here]
 
 ## Acknowledgment
 This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
