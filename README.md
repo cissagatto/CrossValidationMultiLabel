@@ -2,7 +2,7 @@
 A code to execute and save cross-validation in multilabel classification. This code is part of my doctoral research.
 
 # How to cite 
-@misc{Gatto2021, author = {Gatto, E. C.}, title = {Cross-Validation for MultiLabel Classification}, year = {2021}, publisher = {GitHub}, journal = {GitHub repository}, howpublished = {\url{https://github.com/cissagatto/CrossValidationMultiLabel}}}
+@misc{Gatto2022, author = {Gatto, E. C.}, title = {Cross-Validation for MultiLabel Classification}, year = {2022}, publisher = {GitHub}, journal = {GitHub repository}, howpublished = {\url{https://github.com/cissagatto/CrossValidationMultiLabel}}}
 
 ## Scripts
 This source code consists of an R project for R Studio and the following R scripts:
@@ -26,11 +26,38 @@ Confirms if the folder *utils* contains the following files: *Clus.jar*, *R_csv_
 Copy this code and place it where you want. The folder configurations is "~/CrossValidationMultiLabel"
 
 ### Step-3
-A file called _datasets_original.csv_ must be in the *root project* folder. This file is used to read information about the datasets and they are used in the code. All 74 datasets available in *Cometa* are in this file. If you want to use another dataset, please, add the following information about the dataset in the file:
+A file called _datasets-original.csv_ must be in the *root project folder*. This file is used to read information about the datasets and they are used in the code. We have 90 multilabel datasets in this _.csv_ file. If you want to use another dataset, please, add the following information about the dataset in the file:
 
-_Id, Name, Domain, Labels, Instances, Attributes, Inputs, Labelsets, Single, Max freq, Card, Dens, MeanIR, Scumble, TCS, AttStart, AttEnd, LabelStart, LabelEnd, xn, yn, gridn_
 
-The *Id* of the dataset is a mandatory parameter in the command line to run all code. The fields are used in a lot of internal functions. Please, make sure that this information is available before running the code. *xn* and *yn* correspond to a dimension of the quadrangular map for kohonen, and *gridn* is (xn * yn). Example: xn = 4, yn = 4, gridn = 16.
+| Parameter    | Status    | Description                                           |
+|------------- |-----------|-------------------------------------------------------|
+| Id           | mandatory | Integer number to identify the dataset                |
+| Name         | mandatory | Dataset name (please follow the benchmark)            |
+| Domain       | optional  | Dataset domain                                        |
+| Instances    | mandatory | Total number of dataset instances                     |
+| Attributes   | mandatory | Total number of dataset attributes                    |
+| Labels       | mandatory | Total number of labels in the label space             |
+| Inputs       | mandatory | Total number of dataset input attributes              |
+| Cardinality  | optional  |                                                       |
+| Density      | optional  |                                                       |
+| Labelsets    | optional  |                                                       |
+| Single       | optional  |                                                       |
+| Max.freq     | optional  |                                                       |
+| Mean.IR      | optional  |                                                       | 
+| Scumble      | optional  |                                                       | 
+| TCS          | optional  |                                                       | 
+| AttStart     | mandatory | Column number where the attribute space begins*       | 
+| AttEnd       | mandatory | Column number where the attribute space ends          |
+| LabelStart   | mandatory | Column number where the label space begins            |
+| LabelEnd     | mandatory | Column number where the label space ends              |
+| Distinct     | optional  |                                                       |
+| xn           | mandatory | Value for Dimension X of the Kohonen map              | 
+| yn           | mandatory | Value for Dimension Y of the Kohonen map              |
+| gridn        | mandatory | X times Y value. Kohonen's map must be square         |
+| max.neigbors | mandatory | The maximum number of neighbors is given by LABELS -1 |
+
+* Because it is the first column the number is always 1.
+
 
 # Run
 
@@ -73,7 +100,7 @@ This code will generate a 10 folds cross-valdation, using 1 core, for the birds 
 <img src="https://github.com/cissagatto/CrossValidationMultiLabel/blob/main/images/folder_strucutre_mlcv.png" width="300">
 
 ## DOWNLOAD RESULTS
-[Click here]
+[Click here](https://1drv.ms/u/s!Aq6SGcf6js1mrZJSfd6FpToCtGVqJw?e=NxaBfW)
 
 ## Acknowledgment
 This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
