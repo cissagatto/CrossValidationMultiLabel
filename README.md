@@ -59,6 +59,12 @@ A file called _datasets-original.csv_ must be in the *root project folder*. This
 * Because it is the first column the number is always 1.
 
 
+## STEP 4
+You need to have installed all the R packages required to execute this code on your machine. Check out which are needed in the file *libraries.R*. This code does not provide any type of automatic package installation! You can use the Conda environment that I created to perform this experiment. Below are the links to download the files.
+
+| [download txt](https://www.4shared.com/s/fUCVTl13zea) | [download yml](https://www.4shared.com/s/f8nOZyxj9iq) | [download yaml](https://www.4shared.com/s/fk5Io4faLiq) |
+
+
 # Run
 
 To run, first enter the folder ~/CrossValidationMultiLabel/R in a terminal and the type:
