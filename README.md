@@ -1,4 +1,4 @@
-# CrossValidationMultiLabel
+# X-Folds Cross Validation MultiLabel
 A code to execute and save cross-validation in multilabel classification. This code is part of my doctoral research.
 
 # How to cite 
@@ -7,11 +7,11 @@ A code to execute and save cross-validation in multilabel classification. This c
 ## Scripts
 This source code consists of an R project for R Studio and the following R scripts:
 
-1. libraries
-2. utils
-3. CrossValidationMultiLabel
-4. main
-5. cvm
+1. libraries.R
+2. utils.R
+3. CrossValidationMultiLabel.R
+4. main.R
+5. cvm.R
 
 
 ## Multi-Label Datasets
@@ -109,7 +109,8 @@ This code will generate a 10 folds cross-valdation, using 1 core, for the birds 
 [Click here](https://1drv.ms/u/s!Aq6SGcf6js1mrZJSfd6FpToCtGVqJw?e=NxaBfW)
 
 ## Acknowledgment
-This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
+- This study was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
+- This study was financed in part by the Conselho Nacional de Pesquisa e Desenvolvimento - Brasil (CNPQ) - Process number 200371/2022-3
 
 ## Links
 
