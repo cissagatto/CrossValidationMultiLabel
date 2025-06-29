@@ -1,0 +1,9 @@
+Config, Value
+FolderScripts, ~/CrossValidationMultiLabel/R
+Dataset_Path, ~/CrossValidationMultiLabel/Datasets
+Temporary_Path, /tmp/3sources_bbc1000
+Reports_Path, ~/CrossValidationMultiLabel/Reports
+Dataset_Name, 3sources_bbc1000
+Number_Dataset, 1
+Validation, 1
+Number_Folds, 10
