@@ -1,8 +1,8 @@
 Config, Value
-FolderScripts, ~/CrossValidationMultiLabel/R
-Dataset_Path, ~/CrossValidationMultiLabel/Datasets
+FolderScripts, /lapix/arquivos/elaine/CrossValidationMultiLabel/R
+Dataset_Path, /lapix/arquivos/elaine/CrossValidationMultiLabel/Datasets
 Temporary_Path, /tmp/3sources_bbc1000
-Reports_Path, ~/CrossValidationMultiLabel/Reports
+Reports_Path, /lapix/arquivos/elaine/CrossValidationMultiLabel/Reports
 Dataset_Name, 3sources_bbc1000
 Number_Dataset, 1
 Validation, 1

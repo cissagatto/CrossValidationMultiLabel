@@ -77,10 +77,10 @@ while (i <= n) {
   
   write("Config, Value", file = output.file, append = TRUE)
   
-  write("FolderScripts, ~/CrossValidationMultiLabel/R", 
+  write("FolderScripts, /lapix/arquivos/elaine/CrossValidationMultiLabel/R", 
         file = output.file, append = TRUE)
   
-  write("Dataset_Path, ~/CrossValidationMultiLabel/Datasets",
+  write("Dataset_Path, /lapix/arquivos/elaine/CrossValidationMultiLabel/Datasets",
         file = output.file, append = TRUE)
   
   temp.name = paste("/tmp/", ds$Name, sep = "")
@@ -88,7 +88,7 @@ while (i <= n) {
   str.0 = paste("Temporary_Path, ", temp.name, sep = "")
   write(str.0, file = output.file, append = TRUE)
   
-  write("Reports_Path, ~/CrossValidationMultiLabel/Reports",
+  write("Reports_Path, /lapix/arquivos/elaine/CrossValidationMultiLabel/Reports",
         file = output.file, append = TRUE)
   
   str.2 = paste("Dataset_Name, ", ds$Name, sep = "")
