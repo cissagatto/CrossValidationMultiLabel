@@ -88,7 +88,7 @@ args <- commandArgs(TRUE)
 config_file <- args[1]
 
 
-# config_file = "~/CrossValidationMultiLabel/config-files/cvm-EukaryoteGO-1.csv"
+# config_file = "~/CrossValidationMultiLabel/config-files/cvm-emotions-1.csv"
 
 
 parameters$Config.File$Name = config_file

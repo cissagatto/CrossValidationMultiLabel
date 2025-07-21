@@ -233,7 +233,12 @@ check.labels <- function(parameters, arquivo, names.files) {
   xml_labels <- read_xml(names.files$name.xml)
   labels_nodes <- xml_find_all(xml_labels, ".//d1:label", xml_ns(xml_labels))
   label_names_xml <- xml_attr(labels_nodes, "name")
+  
+  # Substituir '-' por '.'
+  label_names_xml <- gsub("-", ".", label_names_xml)
+  
   label_names_dataset <- rownames(arquivo$labels)
+  label_names_dataset <- gsub("-", ".", label_names_dataset)
   
   #res1 = setdiff(label_names_xml, label_names_dataset)
   #res2 = setdiff(label_names_dataset, label_names_xml)
@@ -528,8 +533,12 @@ save.fold.info <- function(parameters,
   names.att = rownames(att.type)
   att.info = data.frame(names.att, att.type)
   rownames(att.info) = NULL
-  att.info = att.info[1:1000, ]
-  att.info = data.frame(index = att.indices, att.info)
+  att = data.frame(att.info[c(parameters$Dataset.Info$AttStart:parameters$Dataset.Info$AttEnd),])
+  
+  if (nrow(att) != nrow(att.indices)) {
+    stop("Different number of attributes. Terminated. Check the attributes number.")
+  }
+  
   name5 = paste0(infoSplit, "/input-info.csv")
   write.csv(att.info, name5, row.names = FALSE)
   retorno$attInfo = att.info
@@ -759,6 +768,10 @@ compute.cv <- function(parameters) {
   arquivo.csv = mldr_from_dataframe(data,
                                     labelIndices = indices.labels,
                                     name = parameters$Dataset.Info$Name)
+  
+  #nome.csv = paste0(parameters$Directories$FolderResults,"/label-names.csv")
+  #nomes = data.frame(read.csv(nome.csv))
+  #arquivo.csv$labels
   
   check.labels(parameters, arquivo.csv, names.files)
   
