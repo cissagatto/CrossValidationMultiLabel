@@ -387,13 +387,36 @@ dataset.analysis <- function(parameters) {
   write.csv(labelsets, name4, row.names = FALSE)
   retorno$labelSets = labelsets
   
+  # AQUI TEM OS DE ENTRADA E SAÍDA
   att.indices = data.frame(arquivo$attributesIndexes)
+  #n.c.all = ncol(att.indices) 
+  #n.l.all = nrow(att.indices) # for EukaryoteGO is 12689
+  #head(att.indices)
+  
+  # APENAS OS ATRIBUTOS DE ENTRADA
   att.type = data.frame(arquivo$attributes)
-  names.att = rownames(att.type)
+  #names.att = rownames(att.type)
+  #n.c.input = ncol(att.type)
+  #n.l.input = nrow(att.type) # for EukaryoteGO is 12711
+  #head(att.type)
+  
   att.info = data.frame(names.att, att.type)
   rownames(att.info) = NULL
-  att.info = att.info[1:1000, ]
-  att.info = data.frame(index = att.indices, att.info)
+  
+  att = data.frame(att.info[c(parameters$Dataset.Info$AttStart:parameters$Dataset.Info$AttEnd),])
+  #head(att)
+  #ncol(att) 
+  #nrow(att)
+  #head(att)
+  
+  # Suponha que você tenha dois dataframes: df1 e df2
+  
+  if (nrow(att) != nrow(att.indices)) {
+    stop("Different number of attributes. Terminated. Check the attributes number.")
+  }
+  
+  
+  att.info = data.frame(index = att.indices, att)
   name5 = paste0(parameters$Directories$FolderResults, "/input-info.csv")
   write.csv(att.info, name5, row.names = FALSE)
   retorno$attInfo = att.info

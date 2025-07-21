@@ -1,0 +1,9 @@
+Config, Value
+FolderScripts, ~/CrossValidationMultiLabel/R
+Dataset_Path, ~/CrossValidationMultiLabel/Datasets
+Temporary_Path, /tmp/EukaryoteGO
+Reports_Path, ~/CrossValidationMultiLabel/Reports
+Dataset_Name, EukaryoteGO
+Number_Dataset, 28
+Validation, 1
+Number_Folds, 10

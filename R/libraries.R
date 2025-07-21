@@ -34,8 +34,8 @@ FolderScripts <- here::here("R")
 
 # List of required CRAN packages
 cran_packages <- c(
-  "readr", "foreign", "stringr", "rJava", "RWeka", "mldr", "xml2",
-  "parallel", "utiml", "foreach", "doParallel", "dplyr", "here"
+  "readr", "foreign", "stringr", "dplyr", "rJava", "RWeka", "mldr",
+  "parallel", "utiml", "foreach", "doParallel", "here", "xml2"
 )
 
 # Base packages (already included with R)
