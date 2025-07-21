@@ -395,7 +395,7 @@ dataset.analysis <- function(parameters) {
   
   # APENAS OS ATRIBUTOS DE ENTRADA
   att.type = data.frame(arquivo$attributes)
-  #names.att = rownames(att.type)
+  names.att = rownames(att.type)
   #n.c.input = ncol(att.type)
   #n.l.input = nrow(att.type) # for EukaryoteGO is 12711
   #head(att.type)
