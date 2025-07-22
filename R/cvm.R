@@ -88,7 +88,7 @@ args <- commandArgs(TRUE)
 config_file <- args[1]
 
 
-# config_file = "~/CrossValidationMultiLabel/config-files/cvm-emotions-1.csv"
+# config_file = "~/CrossValidationMultiLabel/config-files/cvm-foodtruck-1.csv"
 
 
 parameters$Config.File$Name = config_file
@@ -149,6 +149,7 @@ parameters$Config.File$Number.Cores = number_cores
 
 ds = datasets[number_dataset,]
 parameters$Dataset.Info = ds
+
 
 cat("\n########################################")
 cat("\n# Loading R Sources                    #")
@@ -211,7 +212,7 @@ if(parameters$Config.File$Number.Folds == 1){
   cat("\n###############################")
   cat("\n# Splitting                   #")
   cat("\n###############################\n\n")
-  timeCV = system.time(resDA <- compute.cv(parameters))
+  timeCV = system.time(resCV <- compute.cv(parameters, resDA))
   resultCV <- t(data.matrix(timeCV))
   
 }

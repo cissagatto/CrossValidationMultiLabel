@@ -370,6 +370,25 @@ dataset.analysis <- function(parameters) {
   
   arquivo = open.dataset(parameters)
   
+  df <- arquivo$dataset
+  cat_cols <- sapply(df, function(col) is.character(col) || is.factor(col))
+  
+  if (any(cat_cols)) {
+    df[cat_cols] <- lapply(df[cat_cols], function(col) as.integer(factor(col)))
+    arquivo$dataset <- df
+    save_csv_path = paste0(parameters$Directories$FolderResults, 
+                           "/", parameters$Dataset.Info$Name,
+                           "-treated.csv")
+    colunas = ncol(df)-2
+    write.csv(df[,c(1:colunas)], save_csv_path, row.names = FALSE)
+    retorno$mldr <- df
+    retorno$treated = 1
+    message("✔️  Label encoding applied to categorical columns.")
+  } else {
+    retorno$treated = 0
+    message("ℹ️  No categorical columns found. No encoding applied.")
+  }
+  
   nomesRotulos = data.frame(rownames(arquivo$labels))
   index = seq(1, nrow(nomesRotulos), by = 1)
   nomesRotulos = data.frame(index, nomesRotulos)
@@ -431,6 +450,10 @@ dataset.analysis <- function(parameters) {
                  "/dataset-measures.csv")
   write.csv(measures, name5, row.names = FALSE)
   retorno$measures = measures
+  
+  #head(df)
+  #class(df)
+  #str(df)
   
   return(retorno)
   
@@ -756,18 +779,25 @@ properties.datasets <- function(parameters,
 #' }
 #'
 #' @author Elaine Cecília Gatto
-compute.cv <- function(parameters) {
+compute.cv <- function(parameters, resDA) {
   
   retorno = list()
   
   names.files = get.names.files(parameters)
   indices.labels = get.label.indexes(parameters)
   
-  data = data.frame(read.csv(names.files$name.csv))
+  if(resDA$treated==1){
+    cat("tratado")
+    data = data.frame(resDA$mldr)
+  } else {
+    cat("original")
+    data = data.frame(read.csv(names.files$name.csv))
+  }
   
   arquivo.csv = mldr_from_dataframe(data,
                                     labelIndices = indices.labels,
                                     name = parameters$Dataset.Info$Name)
+  
   
   #nome.csv = paste0(parameters$Directories$FolderResults,"/label-names.csv")
   #nomes = data.frame(read.csv(nome.csv))
