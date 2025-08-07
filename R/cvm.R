@@ -249,7 +249,7 @@ cat("\n##############################################################")
 cat("\n# Deleting                                                   #")
 cat("\n##############################################################\n\n")
 
-print(system(paste0("rm -r ", parameters$Directories$FolderResults)))
+system(paste0("rm -r ", parameters$Directories$FolderResults))
 
 
 rm(list = ls())

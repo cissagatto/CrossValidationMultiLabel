@@ -71,7 +71,7 @@ converteArff <- function(arg1, arg2, arg3, FolderUtils) {
               arg2, " ",
               arg3, sep = "")
   
-  res = print(system(str))
+  res = system(str)
   
   cat("\n")
   if (res != 0) {
@@ -294,7 +294,7 @@ old <- function(){
       #cat("\n\t\tTRAIN: Verify and correct {0} and {1}\n")
       arquivo = paste(folders$FolderTR, "/", str_arff_treino, sep = "")
       str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep ="")
-      print(system(str0))
+      system(str0)
       
       treino_mldr = mldr_from_dataframe(treino_ds, labelIndices = 
                                           c(ds$LabelStart:ds$LabelEnd))
@@ -329,7 +329,7 @@ old <- function(){
       arquivo = paste(folders$FolderTS, "/", str_arff_teste, sep = "")
       str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep =
                      "")
-      print(system(str0))
+      system(str0)
       
       teste_mldr = mldr_from_dataframe(teste_ds, labelIndices = 
                                          c(ds$LabelStart:ds$LabelEnd))
@@ -363,7 +363,7 @@ old <- function(){
       arquivo = paste(folders$FolderVL, "/", str_arff_val, sep = "")
       str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep =
                      "")
-      print(system(str0))
+      system(str0)
       
       val_mldr = mldr_from_dataframe(val_ds, labelIndices = 
                                        c(ds$LabelStart:ds$LabelEnd))
@@ -424,7 +424,7 @@ old <- function(){
       arquivo = paste(FolderCVTR, "/", str_arff_treino, sep = "")
       str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep =
                      "")
-      print(system(str0))
+      system(str0)
       
       treino_mldr = mldr_from_dataframe(treino_ds, labelIndices = 
                                           c(ds$LabelStart:ds$LabelEnd))
@@ -458,7 +458,7 @@ old <- function(){
       arquivo = paste(FolderCVTS, "/", str_arff_teste, sep = "")
       str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arquivo, sep =
                      "")
-      print(system(str0))
+      system(str0)
       
       teste_mldr = mldr_from_dataframe(teste_ds, labelIndices = 
                                          c(ds$LabelStart:ds$LabelEnd))
