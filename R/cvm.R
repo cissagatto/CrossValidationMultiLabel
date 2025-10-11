@@ -85,10 +85,12 @@ cat("\n# GET ARGUMENTS FROM COMMAND LINE   #")
 cat("\n#####################################\n\n")
 args <- commandArgs(TRUE)
 
+
 config_file <- args[1]
 
 
-# config_file = "~/CrossValidationMultiLabel/config-files/cvm-foodtruck-1.csv"
+# /home/cissagatto/CrossValidationMultiLabel/config-files/
+# config_file = "~/CrossValidationMultiLabel/config-files/cvm-EukaryoteGO.csv"
 
 
 parameters$Config.File$Name = config_file
@@ -150,6 +152,8 @@ parameters$Config.File$Number.Cores = number_cores
 ds = datasets[number_dataset,]
 parameters$Dataset.Info = ds
 
+parameters
+
 
 cat("\n########################################")
 cat("\n# Loading R Sources                    #")
@@ -208,6 +212,7 @@ if(parameters$Config.File$Number.Folds == 1){
   cat("\n###############################\n\n")
   timeDA = system.time(resDA <- dataset.analysis(parameters))
   resultDA <- t(data.matrix(timeDA))
+  
   
   cat("\n###############################")
   cat("\n# Splitting                   #")

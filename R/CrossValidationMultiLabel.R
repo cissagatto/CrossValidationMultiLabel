@@ -260,6 +260,63 @@ check.labels <- function(parameters, arquivo, names.files) {
 }
 
 
+
+# Função de normalização robusta: converte qualquer sequência de
+# caracteres não alfanuméricos em underscore, remove underscores extras nas bordas.
+normalize_label <- function(x) {
+  x <- as.character(x)
+  # substitui qualquer sequência de caracteres não alfanuméricos por "_"
+  x <- gsub("[^[:alnum:]]+", "_", x, perl = TRUE)
+  # remove underscores no início/fim que possam ter aparecido
+  x <- gsub("^_+|_+$", "", x)
+  # opcional: trim espaços (deveria não existir mais) e manter case original
+  x <- trimws(x)
+  return(x)
+}
+
+
+check.labels.adjusted <- function(parameters, arquivo, names.files) {
+  
+  xml_doc <- read_xml(names.files$name.xml)
+  labels_nodes <- xml_find_all(xml_doc, ".//d1:label", xml_ns(xml_doc))
+  label_names_xml <- xml_attr(labels_nodes, "name")
+  
+  label_names_dataset <- rownames(arquivo$labels)
+  
+  label_names_xml_norm     <- normalize_label(label_names_xml)
+  label_names_dataset_norm <- normalize_label(label_names_dataset)
+  
+  # Para facilitar debug: conjuntos, mantendo a ordem original para mensagens
+  only_in_xml     <- setdiff(label_names_xml_norm, label_names_dataset_norm)
+  only_in_dataset <- setdiff(label_names_dataset_norm, label_names_xml_norm)
+  
+  if (!identical(label_names_xml_norm, label_names_dataset_norm)) {
+    stop(
+      "❌ The labels defined in the XML file do not match the labels extracted from the dataset.\n",
+      "🔍 Please check if the specified label column indices (LabelStart and LabelEnd) are correct.\n\n",
+      if (length(only_in_xml) > 0) {
+        paste0("⚠️ Present in XML (normalized) but missing in dataset: ",
+               paste(only_in_xml, collapse = ", "), "\n")
+      } else "",
+      if (length(only_in_dataset) > 0) {
+        paste0("⚠️ Present in dataset (normalized) but missing in XML: ",
+               paste(only_in_dataset, collapse = ", "), "\n")
+      } else "",
+      "\n",
+      "🔁 Exemplos (original XML -> normalizado):\n",
+      paste0("  ", label_names_xml, " -> ", label_names_xml_norm, collapse = "\n"),
+      "\n\n",
+      "🔁 Exemplos (original dataset -> normalizado):\n",
+      paste0("  ", label_names_dataset, " -> ", label_names_dataset_norm, collapse = "\n")
+    )
+  } else {
+    message("✅ Label check successful: XML and dataset label names match (after robust normalization).")
+  }
+  
+}
+
+
+
 ##############################################################################
 #' Open and Load a Multi-Label Dataset Using MLD Parameters
 #'
@@ -312,7 +369,13 @@ open.dataset <- function(parameters) {
   dados_filtrados <- subset(arquivo$data, select = -c(.labelcount, .SCUMBLE))
   write.csv(dados_filtrados, names.files$name.csv, row.names = FALSE)
   
-  check.labels(parameters, arquivo, names.files)
+  #arquivo$labels
+  #ncol(dados_filtrados)
+  #nrow(dados_filtrados)
+  #colnames(dados_filtrados)
+  #dados_filtrados[,c(295:299)]
+  
+  check.labels.adjusted(parameters, arquivo, names.files)
   
   retorno$dataset = arquivo
   return(arquivo)
@@ -685,10 +748,10 @@ properties.datasets <- function(parameters,
   labels = data$dataset[,indices]
   
   ##################################################################
-  name = paste0(infoSplit, "/label-matrix.txt")
-  sink(name )
-  print(table(labels))
-  sink()
+  #name = paste0(infoSplit, "/label-matrix.txt")
+  #sink(name )
+  #print(table(labels))
+  #sink()
   
   ##################################################################
   instances <- data.frame(
@@ -743,10 +806,10 @@ properties.datasets <- function(parameters,
   #name = paste0(infoSplit, "/concurrence.pdf")
   #mldr::concurrenceReport(data, pdfOutput = TRUE, file = name)
   
-  name = paste0(infoSplit, "/label-interactions.txt")
-  sink(name )
-  print(mldr::labelInteractions(data))
-  sink()
+  #name = paste0(infoSplit, "/label-interactions.txt")
+  #sink(name )
+  #print(mldr::labelInteractions(data))
+  #sink()
   
 }
 
@@ -797,13 +860,16 @@ compute.cv <- function(parameters, resDA) {
   arquivo.csv = mldr_from_dataframe(data,
                                     labelIndices = indices.labels,
                                     name = parameters$Dataset.Info$Name)
+  # arquivo.csv$labels
+  
+  rownames(arquivo.csv$labels) <- sub("^X", "", rownames(arquivo.csv$labels))
   
   
   #nome.csv = paste0(parameters$Directories$FolderResults,"/label-names.csv")
   #nomes = data.frame(read.csv(nome.csv))
   #arquivo.csv$labels
   
-  check.labels(parameters, arquivo.csv, names.files)
+  check.labels.adjusted(parameters, arquivo.csv, names.files)
   
   label.space = data.frame(data[,indices.labels])
   res.all = dependency(label.space)
