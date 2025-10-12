@@ -19,11 +19,330 @@
 
 
 
-
 #library(here)
 #library(stringr)
 #FolderRoot <- here::here()
 #FolderScripts <- here::here("R")
+
+
+
+#' @title Compute Label Dependency Across Cross-Validation Folds
+#'
+#' @description
+#' Computes the average label dependency metric for each fold in a multi-label cross-validation setup,
+#' based on the method proposed by Luaces et al. (2012).
+#' The dependency is calculated using a combination of Pearson correlation and label co-occurrence.
+#'
+#' @param parameters A list containing the following elements:
+#' \itemize{
+#'   \item \code{parameters$Config.File$Number.Folds} - Total number of folds used in cross-validation.
+#'   \item \code{parameters$LabelSpace$Classes} - A list of binary label matrices (one per fold).
+#'   \item \code{parameters$Directories$FolderLocal} - Path where the output CSV file will be saved.
+#' }
+#'
+#' @return A data frame with two columns:
+#' \itemize{
+#'   \item \code{fold} - Fold index.
+#'   \item \code{dependency.label} - Average label dependency for that fold.
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' parameters <- list(
+#'   Config.File = list(Number.Folds = 5),
+#'   LabelSpace = list(Classes = list(fold1 = data.frame(...), ...)),
+#'   Directories = list(FolderLocal = "./results")
+#' )
+#'
+#' result <- compute.label.dependecy(parameters)
+#' print(result)
+#' }
+#'
+#' @seealso \code{\link{dependency}} for the dependency computation logic.
+#' @export
+compute.label.dependecy <- function(parameters) {
+  
+  final <- data.frame(fold = integer(), dependency.label = numeric())
+  
+  for (f in seq_len(parameters$Config.File$Number.Folds)) {
+    cat("\nFold", f)
+    
+    label.space <- as.data.frame(parameters$LabelSpace$Classes[[f]])
+    res <- dependency(label.space)
+    
+    final <- rbind(final,
+                   data.frame(
+                     fold = f,
+                     dependency.label = res$label.dependency
+                   ))
+  }
+  
+  write.csv(
+    final,
+    file.path(
+      parameters$Directories$FolderLocal,
+      "label_dependencies.csv"
+    ),
+    row.names = FALSE
+  )
+  
+  return(final)
+}
+
+
+
+##################################################################
+#' @title Compute Label Dependency for a Binary Label Matrix
+#'
+#' @description
+#' Computes the label dependency value based on the approach from Luaces et al. (2012),
+#' using the Pearson correlation of label pairs, weighted by their co-occurrence.
+#' It only considers the lower triangle of the pairwise matrix to avoid redundancy.
+#'
+#' @param label.space A binary matrix or data frame (instances × labels), where 1 indicates label presence.
+#'
+#' @return A list with:
+#' \itemize{
+#'   \item \code{label.dependency} - A numeric value representing the overall label dependency.
+#' }
+#'
+#' @examples
+#' label.space <- matrix(c(1,0,1, 0,1,1, 1,1,0), ncol=3, byrow=TRUE)
+#' result <- dependency(label.space)
+#' print(result$label.dependency)
+#'
+#' @references
+#' Luaces, O., Díez, J., Barranquero, J., del Coz, J. J., & Bahamonde, A. (2012).
+#' Binary relevance efficacy for multilabel classification. Progress in Artificial Intelligence, 1(4), 303–313.
+#'
+#' @import Matrix
+#' @export
+dependency <- function(label.space) {
+  retorno <- list()
+  
+  library(Matrix)
+  label.space <- Matrix(as.matrix(label.space), sparse = TRUE)
+  label.space <- as(as.matrix(label.space), "dgCMatrix")
+  
+  pearson.matrix <- cor(as.matrix(label.space), method = "pearson")
+  pearson.matrix[is.na(pearson.matrix)] <- 0
+  
+  intersection.matrix <- t(label.space) %*% label.space
+  intersection.matrix <- as.matrix(intersection.matrix)
+  
+  pearson.abs <- abs(pearson.matrix)
+  pearson.abs[upper.tri(pearson.abs)] <- 0
+  intersection.matrix[upper.tri(intersection.matrix)] <- 0
+  
+  produto <- pearson.abs * intersection.matrix
+  
+  soma_produto <- sum(produto)
+  soma_intersecoes <- sum(intersection.matrix)
+  
+  retorno$label.dependency <- if (soma_intersecoes > 0) {
+    soma_produto / soma_intersecoes
+  } else {
+    0
+  }
+  
+  return(retorno)
+}
+
+
+#' @title Compute Diversity of Label Combinations
+#'
+#' @description
+#' Computes the diversity of label combinations (labelsets) in a multilabel dataset
+#' using a fully vectorized approach based on the \code{interaction()} function.
+#' The diversity is defined as the ratio between the number of unique label combinations
+#' present in the dataset and the total number of possible label combinations.
+#'
+#' @param df_labels A data frame or matrix of binary label values (0/1),
+#' where each column represents a label and each row represents an instance.
+#'
+#' @return A numeric value between 0 and 1 representing the diversity of label combinations.
+#' - **0** means all instances share the same label combination.
+#' - **1** means all possible label combinations are present in the dataset.
+#'
+#' @examples
+#' # Example 1: simple multilabel dataset
+#' labels <- data.frame(
+#'   L1 = c(1, 0, 1, 0),
+#'   L2 = c(0, 1, 1, 0),
+#'   L3 = c(1, 0, 0, 0)
+#' )
+#' 
+#' compute_diversity(labels)
+#'
+#' # Example 2: dataset with many labels
+#' set.seed(123)
+#' labels2 <- as.data.frame(matrix(sample(0:1, 1000 * 50, replace = TRUE), ncol = 50))
+#' compute_diversity(labels2)
+#'
+#' @details
+#' This implementation leverages R's internal \code{interaction()} function to create
+#' a unique factor level for each distinct combination of label values (rows).
+#' Since \code{interaction()} operates in C and is fully vectorized, the function
+#' performs efficiently even with large numbers of instances and labels.
+#'
+#' Unlike numerical encoding approaches that rely on powers of two (e.g., \eqn{2^n}),
+#' this method avoids integer overflow and floating-point precision issues.
+#' It is therefore suitable for datasets with 100 or more labels.
+#'
+#' Note that the theoretical denominator (\eqn{2^n_labels}) grows exponentially;
+#' while this does not affect the computation directly, it can lead to very small
+#' diversity values when \code{n_labels} is large.
+#'
+#' @references
+#' i02momuj (2020). "MLDA: Multilabel Dataset Analysis". 
+#' Available at: \url{https://github.com/i02momuj/MLDA/blob/master/doc/MLDA_Doc.pdf}
+#'
+#' @seealso
+#' \code{\link{interaction}} for the underlying mechanism used to encode combinations.
+#'
+#' @export
+compute_diversity <- function(df_labels) {
+  n_labels <- ncol(df_labels)
+  
+  # Reference: MLDA - Multilabel Dataset Analysis
+  # See: https://github.com/i02momuj/MLDA/blob/master/doc/MLDA_Doc.pdf
+  
+  # 'interaction' creates a unique factor level for each combination of labels
+  combos <- interaction(as.data.frame(df_labels), drop = TRUE)
+  
+  n_unique <- length(levels(combos))
+  diversity <- n_unique / (2^n_labels)
+  
+  return(diversity)
+}
+
+
+
+#' @title Compute Label Dependency Ratio (rDep) Using Chi-Square Test
+#'
+#' @description
+#' Calculates the **label dependency ratio (rDep)** for a multilabel dataset using
+#' pairwise Chi-square tests of independence between all pairs of labels.
+#'
+#' The function is partially vectorized, optimizing the calculation of pairwise
+#' contingency tables and Chi-square statistics without relying on repeated
+#' calls to \code{chisq.test()}.
+#'
+#' @param labels A data frame or matrix containing binary label values (0/1),
+#' where each column represents a label and each row an instance.
+#'
+#' @param alpha Significance level used for the Chi-square test
+#' (default = 0.01). Pairs with p-value < alpha are considered dependent.
+#'
+#' @return A numeric value between 0 and 1 representing the **proportion of dependent label pairs**:
+#' \deqn{rDep = (number\ of\ dependent\ pairs) / (total\ number\ of\ pairs)}
+#'
+#' - **0** → All label pairs are independent.  
+#' - **1** → All label pairs are dependent.
+#'
+#' @details
+#' For each pair of labels \eqn{(L_i, L_j)}, the function constructs a 2x2 contingency table:
+#'
+#' |          | L_j = 1 | L_j = 0 |
+#' |-----------|----------|----------|
+#' | **L_i = 1** | a        | b        |
+#' | **L_i = 0** | c        | d        |
+#'
+#' The expected frequencies under the null hypothesis of independence are computed as:
+#' \deqn{E_{ij} = (row\ total_i \times column\ total_j) / n}
+#'
+#' The Chi-square statistic is then:
+#' \deqn{\chi^2 = \sum{(O_{ij} - E_{ij})^2 / E_{ij}}}
+#'
+#' and the corresponding p-value is obtained from the Chi-square distribution
+#' with one degree of freedom.
+#'
+#' If the p-value is smaller than `alpha`, the pair is considered **dependent**.
+#'
+#' The ratio `rDep` expresses the fraction of dependent pairs among all possible
+#' label pairs (\eqn{n_{labels}(n_{labels}-1)/2}).
+#'
+#' @examples
+#' # Example 1: simple multilabel dataset
+#' labels <- data.frame(
+#'   L1 = c(1, 0, 1, 1, 0),
+#'   L2 = c(1, 1, 0, 0, 0),
+#'   L3 = c(0, 1, 1, 0, 0)
+#' )
+#'
+#' compute_rdep(labels)
+#'
+#' # Example 2: adjusting significance level
+#' compute_rdep(labels, alpha = 0.05)
+#'
+#' # Example 3: large random dataset
+#' set.seed(123)
+#' labels2 <- as.data.frame(matrix(sample(0:1, 100 * 10, replace = TRUE), ncol = 10))
+#' compute_rdep(labels2)
+#'
+#' @seealso
+#' \code{\link{chisq.test}} for the standard Chi-square test implementation.
+#'
+#' @note
+#' This implementation uses a manual Chi-square calculation for efficiency and transparency,
+#' avoiding repeated calls to \code{chisq.test()}.
+#'
+#' The function assumes binary labels and that there are no columns with all zeros or all ones,
+#' which could lead to division-by-zero issues in expected value computation.
+#'
+#' @references
+#' MLL Resources. "Multilabel Learning Resources". 
+#' Available at: \url{https://www.uco.es/kdis/mllresources/}
+#'
+#' @export
+compute_rdep <- function(labels, alpha = 0.01) {
+  labels <- as.matrix(labels)
+  n_labels <- ncol(labels)
+  n_inst <- nrow(labels)
+  
+  # Reference: MLL Resources - Multilabel Learning Resources
+  # See: https://www.uco.es/kdis/mllresources/
+  
+  # Total number of label pairs
+  total_pairs <- n_labels * (n_labels - 1) / 2
+  
+  # Precompute column sums
+  col_sums <- colSums(labels)
+  
+  # Initialize dependent pair counter
+  dependent_pairs <- 0
+  
+  # Generate all label column pairs
+  pairs <- combn(n_labels, 2)
+  
+  # Loop through all pairs
+  for (k in 1:ncol(pairs)) {
+    i <- pairs[1, k]
+    j <- pairs[2, k]
+    
+    # Elements of the 2x2 contingency table
+    a <- sum(labels[, i] & labels[, j])
+    b <- col_sums[i] - a
+    c <- col_sums[j] - a
+    d <- n_inst - a - b - c
+    
+    # Expected frequencies
+    E <- matrix(c((a+b)*(a+c), (a+b)*(b+d),
+                  (c+d)*(a+c), (c+d)*(b+d)), nrow = 2) / n_inst
+    
+    # Chi-square statistic
+    chi2 <- sum((c(a,b,c,d) - c(E))^2 / c(E))
+    
+    # p-value
+    p_val <- 1 - pchisq(chi2, df = 1)
+    
+    if (p_val < alpha) dependent_pairs <- dependent_pairs + 1
+  }
+  
+  rDep <- dependent_pairs / total_pairs
+  return(rDep)
+}
+
 
 
 
@@ -274,7 +593,59 @@ normalize_label <- function(x) {
   return(x)
 }
 
-
+#' @title Check and Compare Label Names Between XML and Dataset
+#'
+#' @description
+#' Compares the label names defined in an XML file with the labels in a dataset,
+#' after applying robust normalization. The function ensures that the labels in both
+#' sources match exactly, providing detailed messages about discrepancies if any.
+#'
+#' @param parameters A list of parameters controlling dataset processing.
+#' Currently not used directly in the function, but typically includes label start/end indices.
+#'
+#' @param arquivo A list representing the dataset, containing at least a `labels` element
+#' (matrix or data frame) where row names correspond to label names.
+#'
+#' @param names.files A list containing file paths, with `name.xml` pointing to
+#' the XML file containing label definitions.
+#'
+#' @return Invisibly returns \code{NULL}. The function is used for **validation**.
+#' It throws an error (\code{stop()}) if labels do not match, or prints a message if they match.
+#'
+#' @details
+#' The function performs the following steps:
+#' 1. Reads the XML file and extracts label names from `<label name="...">` nodes.
+#' 2. Extracts label names from the dataset row names.
+#' 3. Normalizes both sets of label names using \code{normalize_label()} to remove
+#'    formatting differences (e.g., spaces, capitalization, special characters).
+#' 4. Compares the normalized label sets and identifies:
+#'    - Labels present in XML but missing in the dataset.
+#'    - Labels present in the dataset but missing in XML.
+#' 5. If any mismatch exists, the function stops execution with a detailed error message.
+#' 6. If all labels match, a success message is displayed.
+#'
+#' @examples
+#' \dontrun{
+#' parameters <- list(LabelStart = 1, LabelEnd = 5)
+#' arquivo <- list(labels = data.frame(matrix(ncol = 5, nrow = 10)))
+#' rownames(arquivo$labels) <- c("Label1", "Label2", "Label3", "Label4", "Label5")
+#' 
+#' names.files <- list(name.xml = "path/to/labels.xml")
+#'
+#' check.labels.adjusted(parameters, arquivo, names.files)
+#' }
+#'
+#' @note
+#' - This function relies on \code{xml2::read_xml} and \code{xml2::xml_find_all} for parsing XML files.
+#' - Label names are compared **after normalization**. Use \code{normalize_label()} to customize
+#'   normalization behavior if needed.
+#' - Intended for datasets and XML label files following standard multilabel formats.
+#'
+#' @seealso
+#' \code{\link{normalize_label}} for label normalization,  
+#' \code{\link{xml2::read_xml}}, \code{\link{xml2::xml_find_all}} for XML parsing.
+#'
+#' @export
 check.labels.adjusted <- function(parameters, arquivo, names.files) {
   
   xml_doc <- read_xml(names.files$name.xml)
@@ -286,7 +657,7 @@ check.labels.adjusted <- function(parameters, arquivo, names.files) {
   label_names_xml_norm     <- normalize_label(label_names_xml)
   label_names_dataset_norm <- normalize_label(label_names_dataset)
   
-  # Para facilitar debug: conjuntos, mantendo a ordem original para mensagens
+  # For debugging: differences between XML and dataset
   only_in_xml     <- setdiff(label_names_xml_norm, label_names_dataset_norm)
   only_in_dataset <- setdiff(label_names_dataset_norm, label_names_xml_norm)
   
@@ -303,10 +674,10 @@ check.labels.adjusted <- function(parameters, arquivo, names.files) {
                paste(only_in_dataset, collapse = ", "), "\n")
       } else "",
       "\n",
-      "🔁 Exemplos (original XML -> normalizado):\n",
+      "🔁 Examples (original XML -> normalized):\n",
       paste0("  ", label_names_xml, " -> ", label_names_xml_norm, collapse = "\n"),
       "\n\n",
-      "🔁 Exemplos (original dataset -> normalizado):\n",
+      "🔁 Examples (original dataset -> normalized):\n",
       paste0("  ", label_names_dataset, " -> ", label_names_dataset_norm, collapse = "\n")
     )
   } else {
@@ -514,9 +885,26 @@ dataset.analysis <- function(parameters) {
   write.csv(measures, name5, row.names = FALSE)
   retorno$measures = measures
   
+  # Supondo que 'dataset' seja seu dataframe completo
+  # e as colunas de rótulos vão de 11 a 50
+  data = arquivo$dataset
+  indices = c(parameters$Dataset.Info$LabelStart:parameters$Dataset.Info$LabelEnd)
+  data = data.frame(data[,indices])
+  rDep = compute_rdep(data)
+  labelDependency  = dependency(data)
+  diversity <- compute_diversity(data)
+  
+  all = data.frame(diversity, rDep, labelDependency)
+  
+  name = paste0(parameters$Directories$FolderResults, "/dependency_diversity.csv")
+  write.csv(all, name, row.names = FALSE)
+  
   #head(df)
   #class(df)
   #str(df)
+  
+  retorno$rDep = rDep
+  retorno$labelDependency = labelDependency
   
   return(retorno)
   
@@ -1090,128 +1478,6 @@ compute.cv <- function(parameters, resDA) {
 } # end function
 
 
-
-#' @title Compute Label Dependency Across Cross-Validation Folds
-#'
-#' @description
-#' Computes the average label dependency metric for each fold in a multi-label cross-validation setup,
-#' based on the method proposed by Luaces et al. (2012).
-#' The dependency is calculated using a combination of Pearson correlation and label co-occurrence.
-#'
-#' @param parameters A list containing the following elements:
-#' \itemize{
-#'   \item \code{parameters$Config.File$Number.Folds} - Total number of folds used in cross-validation.
-#'   \item \code{parameters$LabelSpace$Classes} - A list of binary label matrices (one per fold).
-#'   \item \code{parameters$Directories$FolderLocal} - Path where the output CSV file will be saved.
-#' }
-#'
-#' @return A data frame with two columns:
-#' \itemize{
-#'   \item \code{fold} - Fold index.
-#'   \item \code{dependency.label} - Average label dependency for that fold.
-#' }
-#'
-#' @examples
-#' \dontrun{
-#' parameters <- list(
-#'   Config.File = list(Number.Folds = 5),
-#'   LabelSpace = list(Classes = list(fold1 = data.frame(...), ...)),
-#'   Directories = list(FolderLocal = "./results")
-#' )
-#'
-#' result <- compute.label.dependecy(parameters)
-#' print(result)
-#' }
-#'
-#' @seealso \code{\link{dependency}} for the dependency computation logic.
-#' @export
-compute.label.dependecy <- function(parameters) {
-  
-  final <- data.frame(fold = integer(), dependency.label = numeric())
-  
-  for (f in seq_len(parameters$Config.File$Number.Folds)) {
-    cat("\nFold", f)
-    
-    label.space <- as.data.frame(parameters$LabelSpace$Classes[[f]])
-    res <- dependency(label.space)
-    
-    final <- rbind(final,
-                   data.frame(
-                     fold = f,
-                     dependency.label = res$label.dependency
-                   ))
-  }
-  
-  write.csv(
-    final,
-    file.path(
-      parameters$Directories$FolderLocal,
-      "label_dependencies.csv"
-    ),
-    row.names = FALSE
-  )
-  
-  return(final)
-}
-
-
-
-##################################################################
-#' @title Compute Label Dependency for a Binary Label Matrix
-#'
-#' @description
-#' Computes the label dependency value based on the approach from Luaces et al. (2012),
-#' using the Pearson correlation of label pairs, weighted by their co-occurrence.
-#' It only considers the lower triangle of the pairwise matrix to avoid redundancy.
-#'
-#' @param label.space A binary matrix or data frame (instances × labels), where 1 indicates label presence.
-#'
-#' @return A list with:
-#' \itemize{
-#'   \item \code{label.dependency} - A numeric value representing the overall label dependency.
-#' }
-#'
-#' @examples
-#' label.space <- matrix(c(1,0,1, 0,1,1, 1,1,0), ncol=3, byrow=TRUE)
-#' result <- dependency(label.space)
-#' print(result$label.dependency)
-#'
-#' @references
-#' Luaces, O., Díez, J., Barranquero, J., del Coz, J. J., & Bahamonde, A. (2012).
-#' Binary relevance efficacy for multilabel classification. Progress in Artificial Intelligence, 1(4), 303–313.
-#'
-#' @import Matrix
-#' @export
-dependency <- function(label.space) {
-  retorno <- list()
-  
-  library(Matrix)
-  label.space <- Matrix(as.matrix(label.space), sparse = TRUE)
-  label.space <- as(as.matrix(label.space), "dgCMatrix")
-  
-  pearson.matrix <- cor(as.matrix(label.space), method = "pearson")
-  pearson.matrix[is.na(pearson.matrix)] <- 0
-  
-  intersection.matrix <- t(label.space) %*% label.space
-  intersection.matrix <- as.matrix(intersection.matrix)
-  
-  pearson.abs <- abs(pearson.matrix)
-  pearson.abs[upper.tri(pearson.abs)] <- 0
-  intersection.matrix[upper.tri(intersection.matrix)] <- 0
-  
-  produto <- pearson.abs * intersection.matrix
-  
-  soma_produto <- sum(produto)
-  soma_intersecoes <- sum(intersection.matrix)
-  
-  retorno$label.dependency <- if (soma_intersecoes > 0) {
-    soma_produto / soma_intersecoes
-  } else {
-    0
-  }
-  
-  return(retorno)
-}
 
 
 

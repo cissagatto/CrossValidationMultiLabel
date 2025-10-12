@@ -90,7 +90,7 @@ config_file <- args[1]
 
 
 # /home/cissagatto/CrossValidationMultiLabel/config-files/
-# config_file = "~/CrossValidationMultiLabel/config-files/cvm-EukaryoteGO.csv"
+# config_file = "~/CrossValidationMultiLabel/config-files/cvm-flags.csv"
 
 
 parameters$Config.File$Name = config_file
