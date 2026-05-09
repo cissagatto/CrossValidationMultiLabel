@@ -90,7 +90,9 @@ config_file <- args[1]
 
 
 # /home/cissagatto/CrossValidationMultiLabel/config-files/
-# config_file = "~/CrossValidationMultiLabel/config-files/cvm-flags.csv"
+
+
+# config_file = "~/CrossValidationMultiLabel/config-files/cvm-Reuters-K500.csv"
 
 
 parameters$Config.File$Name = config_file
@@ -178,8 +180,10 @@ parameters$Directories = diretorios
 cat("\n###############################")
 cat("\n# Copy files                  #")
 cat("\n###############################\n\n")
-arff.name = paste0(parameters$Directories$FolderDataset, "/", parameters$Config.File$Dataset.Name, ".arff")
-xml.name = paste0(parameters$Directories$FolderDataset, "/", parameters$Config.File$Dataset.Name, ".xml")
+arff.name = paste0(parameters$Directories$FolderDataset, "/", 
+                   parameters$Config.File$Dataset.Name, ".arff")
+xml.name = paste0(parameters$Directories$FolderDataset, "/", 
+                  parameters$Config.File$Dataset.Name, ".xml")
 
 str01 = paste0("cp ", arff.name, " ", parameters$Directories$FolderResults)
 res = system(str01)

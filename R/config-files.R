@@ -77,7 +77,7 @@ while (i <= n) {
   
   write("Config, Value", file = output.file, append = TRUE)
   
-  # /lapix/arquivos/elaine
+  # /lapix/arquivos/elaine/CrossValidationMultiLabel/R
   write("FolderScripts, ~/CrossValidationMultiLabel/R", 
         file = output.file, append = TRUE)
   
@@ -101,6 +101,8 @@ while (i <= n) {
   write("Validation, 1", file = output.file, append = TRUE)
   
   write("Number_Folds, 10", file = output.file, append = TRUE)
+  
+  write("Number_Cores, 1", file = output.file, append = TRUE)
   
   close(output.file)
   

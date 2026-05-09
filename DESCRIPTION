@@ -1,0 +1,31 @@
+Package: CrossValidationMultiLabel
+Type: Package
+Title: A Package to create and save k-fold cross validation for multiLabel probleams
+Version: 0.1.0
+Authors@R: 
+    person("Elaine Cecília", "Gatto", 
+           email = "elainececiliagattto@gmail.com", 
+           role = c("aut", "cre"))
+Description: A code to execute and save cross-validation in multilabel classification. 
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 4.0)
+Imports:
+    readr,
+    foreign,
+    stringr,
+    dplyr,
+    rJava,
+    RWeka,
+    mldr,
+    parallel,
+    utiml,
+    foreach,
+    doParallel,
+    here,
+    xml2
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+

@@ -733,20 +733,94 @@ open.dataset <- function(parameters) {
   
   indices.labels = get.label.indexes(parameters)
   
-  arquivo = mldr(name, use_xml = TRUE, label_indices = indices.labels)
+  #"/home/cissagatto/CrossValidationMultiLabel/Datasets/ng20.arff"
+  folder <- trimws(parameters$Directories$FolderDataset)
+  dataset <- trimws(parameters$Config.File$Dataset.Name)
+  nome <- file.path(folder, paste0(dataset, ".arff"))
+  nome <- path.expand(nome)
+  
+  cat("Final Path:", nome, "\n")
+  
+  if (!file.exists(nome)) {
+    stop("Arquivo não encontrado!")
+  }
+  
+  dados <- RWeka::read.arff(nome)
+  df <- as.data.frame(dados)
+  ncol(df)
+  nrow(df)
+  
+  nomes_das_colunas = colnames(df)
+  idx <- seq_along(colnames(df))
+  rotulos = data.frame(idx, nomes_das_colunas)
+  
+  folder <- trimws(parameters$Directories$FolderDataset)
+  dataset <- trimws(parameters$Config.File$Dataset.Name)
+  caminho_xml <- file.path(folder, paste0(dataset, ".xml"))
+  caminho_xml <- path.expand(caminho_xml)
+  xml <- read_xml(caminho_xml)
+  
+  ns <- xml_ns(xml)
+  labels_nodes <- xml_find_all(xml, ".//d1:label", ns)
+  labels <- xml_attr(labels_nodes, "name")
+  length(labels)
+  idx_labels <- match(labels, nomes_das_colunas)
+  first_label <- labels[1]
+  position <- match(first_label, colnames(df))
+  
+  if (is.na(position)) {
+    stop("First label not found in dataset")
+  }
+  
+  if (position == 1) {
+    cat("Labels are at the beginning\n")
+    total = ncol(df)
+    labels_df <- df[, labels]
+    total_labels = ncol(labels_df)
+    start = total_labels + 1 
+    
+    features_df <- df[,start:total]
+    ncol(features_df)
+    class(features_df)
+    
+    total - total_labels
+    data = data.frame(features_df, labels_df)
+    sapply(data, class)
+    data[] <- lapply(data, function(x) as.numeric(as.character(x)))
+   
+    folder <- trimws(parameters$Directories$FolderDataset)
+    dataset <- trimws(parameters$Config.File$Dataset.Name)
+    nome <- file.path(folder, paste0(dataset, ".csv"))
+    nome <- path.expand(nome)
+    write.csv(data, file = nome, row.names = FALSE)
+    
+    #folder <- trimws(parameters$Directories$FolderDataset)
+    #dataset <- trimws(parameters$Config.File$Dataset.Name)
+    #nome <- file.path(folder, paste0(dataset, "2.arff"))
+    #nome <- path.expand(nome)
+    #RWeka::write.arff(data, file = nome)
+    
+    arquivo <- mldr_from_dataframe(
+      data,
+      labelIndices = indices.labels
+    )
+    
+  } else {
+    cat("Labels are NOT at the beginning\n")
+    arquivo = mldr(name, use_xml = TRUE, label_indices = indices.labels)
+    
+  }
   
   names.files = get.names.files(parameters)
-  
   dados_filtrados <- subset(arquivo$data, select = -c(.labelcount, .SCUMBLE))
   write.csv(dados_filtrados, names.files$name.csv, row.names = FALSE)
+  check.labels.adjusted(parameters, arquivo, names.files)
   
   #arquivo$labels
   #ncol(dados_filtrados)
   #nrow(dados_filtrados)
   #colnames(dados_filtrados)
   #dados_filtrados[,c(295:299)]
-  
-  check.labels.adjusted(parameters, arquivo, names.files)
   
   retorno$dataset = arquivo
   return(arquivo)
@@ -823,6 +897,8 @@ dataset.analysis <- function(parameters) {
     message("ℹ️  No categorical columns found. No encoding applied.")
   }
   
+  
+  
   nomesRotulos = data.frame(rownames(arquivo$labels))
   index = seq(1, nrow(nomesRotulos), by = 1)
   nomesRotulos = data.frame(index, nomesRotulos)
@@ -852,9 +928,18 @@ dataset.analysis <- function(parameters) {
   #head(att.indices)
   
   # APENAS OS ATRIBUTOS DE ENTRADA
-  att.type = data.frame(arquivo$attributes)
+  data = data.frame(arquivo$dataset)
+  total_certo = ncol(data)
+  a = total_certo
+  b = total_certo - 1
+  data = data[, c(-a,-b)]
+  fim = ncol(data) - nrow(nomesRotulos)
+  
+  att.type = data.frame(data[,c(1:fim)])
+  n.c.input = ncol(att.type)
+  
   names.att = rownames(att.type)
-  #n.c.input = ncol(att.type)
+ 
   #n.l.input = nrow(att.type) # for EukaryoteGO is 12711
   #head(att.type)
   
@@ -890,14 +975,13 @@ dataset.analysis <- function(parameters) {
   data = arquivo$dataset
   indices = c(parameters$Dataset.Info$LabelStart:parameters$Dataset.Info$LabelEnd)
   data = data.frame(data[,indices])
-  rDep = compute_rdep(data)
-  labelDependency  = dependency(data)
-  diversity <- compute_diversity(data)
+  rDep = NULL
+  labelDependency  = NULL
+  diversity <- NULL
   
-  all = data.frame(diversity, rDep, labelDependency)
-  
-  name = paste0(parameters$Directories$FolderResults, "/dependency_diversity.csv")
-  write.csv(all, name, row.names = FALSE)
+  #all = data.frame(diversity, rDep, labelDependency)
+  #name = paste0(parameters$Directories$FolderResults, "/dependency_diversity.csv")
+  #write.csv(all, name, row.names = FALSE)
   
   #head(df)
   #class(df)
